@@ -2,8 +2,11 @@
 
 To properly setup and secure your AKS cluster, there is a couple of feature and component to enable, here is the list:
 
+
 - Azure KeyVault
 - Azure Pipelines
+- (Preview) Limit Egress Traffic https://github.com/mathieu-benoit/myakscluster/issues/16
+- (Preview) Use IP whitelisting for the Kubernetes API https://github.com/mathieu-benoit/myakscluster/issues/12
 
 # Create Resource Group and AKS
 
