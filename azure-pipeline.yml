@@ -9,11 +9,11 @@ variables:
   location: eastus
   nodeCount: 1
   nodeSize: Standard_B2s
-  # define 6 more variables: subscriptionId, spId, spSecret, spTenantId, aks and rg in the pipeline UI definition
+  # define 6 more variables: subscriptionId, spId, spPassword, spTenantId, aks and rg in the pipeline UI definition
 
 steps:
 - bash: |
-    az login --service-principal -u $(spId) -p (spPassword) --tenant $(spTenantId)
+    az login --service-principal -u $(spId) -p $(spPassword) --tenant $(spTenantId)
     az account set -s $(subscriptionId)
     suffix=$(shuf -i 1000-9999 -n 1)
     az group create -n $(rg)-$(suffix) -l $(location)
