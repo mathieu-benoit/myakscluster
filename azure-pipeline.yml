@@ -9,10 +9,12 @@ variables:
   location: eastus
   nodeCount: 1
   nodeSize: Standard_B2s
-  # define 2 more variables: aks and rg in the pipeline UI definition
+  # define 6 more variables: subscriptionId, spId, spSecret, spTenantId, aks and rg in the pipeline UI definition
 
 steps:
 - bash: |
+    az login --service-principal -u $(spId) -p (spSecret) --tenant $(spTenantId)
+    az account set -s $(subscriptionId)
     suffix=$(shuf -i 1000-9999 -n 1)
     az group create -n $(rg)-$(suffix) -l $(location)
     k8sVersion=$(az aks get-versions -l $(location) --query 'orchestrators[-1].orchestratorVersion' -o tsv)
