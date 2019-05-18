@@ -1,0 +1,19 @@
+pool:
+  vmImage: 'Ubuntu 16.04'
+
+trigger: none 
+
+pr: none 
+
+variables:
+  location: eastus
+  nodeCount: 1
+  nodeSize: 
+  # define 2 more variables: aks and rg in the pipeline UI definition
+
+steps:
+- bash: |
+    az group create -n $(rg) -l $(location)
+    k8sVersion=$(az aks get-versions -l $(location) --query 'orchestrators[-1].orchestratorVersion' -o tsv)
+    az aks create -l $(location) -n $(aks) -g $(rg) --generate-ssh-keys -k $(k8sVersion) -s $(nodeSize) -c $(nodeCount)
+  displayName: 'create rg and aks'
