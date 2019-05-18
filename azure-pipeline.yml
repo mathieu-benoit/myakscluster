@@ -18,5 +18,5 @@ steps:
     suffix=$(shuf -i 1000-9999 -n 1)
     az group create -n $(rg)-$suffix -l $(location)
     k8sVersion=$(az aks get-versions -l $(location) --query 'orchestrators[-1].orchestratorVersion' -o tsv)
-    az aks create -l $(location) -n $(aks)-$suffix -g $(rg)-$suffix --generate-ssh-keys -k $k8sVersion -s $(nodeSize) -c $(nodeCount)
+    az aks create -l $(location) -n $(aks)-$suffix -g $(rg)-$suffix --no-ssh-key -k $k8sVersion -s $(nodeSize) -c $(nodeCount)
   displayName: 'create rg and aks'
