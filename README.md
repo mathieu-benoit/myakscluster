@@ -2,23 +2,13 @@
 
 To properly setup and secure your AKS cluster, there is a couple of feature and component to enable, here is the list:
 
-
-- Azure KeyVault
-- Azure Pipelines
-- (Preview) Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
-- (Preview) Use IP whitelisting for the Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
-
-# Create Resource Group and AKS
-
-```
-location=eastus
-rg=<rg-name>
-aks=<aks-name>
-sku=Standard_B2s
-k8sVersion=$(az aks get-versions -l $location --query 'orchestrators[-1].orchestratorVersion' -o tsv)
-az group create -n $rg -l $location
-az aks create -l $location -n $aks -g $rg --generate-ssh-keys -k $k8sVersion -s $(nodeSize) -c 1
-```
+- [X] Service Principal [#19](https://github.com/mathieu-benoit/myakscluster/issues/19)
+- [] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
+- [] Setup kured for automatic OS patches [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
+- [] (Preview) Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
+- [] (Preview) Use IP whitelisting for the Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
+- [] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
+- [] (Beta) Azure Active Directory Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
 
 # Create ACR
 
