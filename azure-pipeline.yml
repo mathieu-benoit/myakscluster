@@ -13,7 +13,7 @@ variables:
 
 steps:
 - bash: |
-    az login --service-principal -u $(spId) -p (spSecret) --tenant $(spTenantId)
+    az login --service-principal -u $(spId) -p (spPassword) --tenant $(spTenantId)
     az account set -s $(subscriptionId)
     suffix=$(shuf -i 1000-9999 -n 1)
     az group create -n $(rg)-$(suffix) -l $(location)
