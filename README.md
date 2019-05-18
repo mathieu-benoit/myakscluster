@@ -2,13 +2,15 @@
 
 To properly setup and secure your AKS cluster, there is a couple of feature and component to enable, here is the list:
 
-- [X] Service Principal [#19](https://github.com/mathieu-benoit/myakscluster/issues/19)
+- [X] Service Principal [#6](https://github.com/mathieu-benoit/myakscluster/issues/6)
 - [ ] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
-- [] Setup kured for automatic OS patches [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
-- [] (Preview) Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
-- [] (Preview) Use IP whitelisting for the Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
-- [] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
-- [] (Beta) Azure Active Directory Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
+- [ ] kured [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
+- [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
+- [ ] (Preview) Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
+- [ ] (Preview) IP whitelisting for Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
+- [ ] (Preview) Azure Policy [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
+- [ ] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
+- [ ] (Beta) Azure Active Directory Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
 
 # Create ACR
 
