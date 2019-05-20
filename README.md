@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/mabenoit-ms/MyOwnBacklog/_apis/build/status/myakscluster?branchName=master)](https://dev.azure.com/mabenoit-ms/MyOwnBacklog/_build/latest?definitionId=97?branchName=master)
+
 # myakscluster
 
 To properly setup and secure your AKS cluster, there is a couple of feature and component to enable, here is the list:
