@@ -17,7 +17,7 @@ steps:
     az account set -s $(subscriptionId)
     suffix=$(shuf -i 1000-9999 -n 1)
     az group create -n $(rg)-$suffix -l $(location)
-    az group lock create --lock-type CanNotDelete -n CanNotDelete -g $(rg)
+    az group lock create --lock-type CanNotDelete -n CanNotDelete -g $(rg)-$suffix
     #aksClientSecret=$(az ad sp create-for-rbac -n $(aks)-$suffix --skip-assignment --query password -o tsv)
     aksClientSecret=$(spSecret)
     #aksServicePrincipal=$(az ad sp show --id http://$(aks)-$suffix --query appId -o tsv)
