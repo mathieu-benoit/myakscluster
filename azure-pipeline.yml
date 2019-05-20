@@ -7,7 +7,7 @@ pr: none
 
 variables:
   location: eastus
-  nodeCount: 1
+  nodeCount: 3
   nodeSize: Standard_B2s
   # define 6 more variables: subscriptionId, spId, spSecret, spTenantId, aks and rg in the pipeline UI definition
 
