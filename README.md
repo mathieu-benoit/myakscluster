@@ -24,7 +24,7 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 subscriptionId=$(az account show --query id -o tsv)
 tenantId=$(az account show --query tenantId -o tsv)
 spName=<spName>
-spSecret=$(az ad sp create-for-rbac -n $spName --role Owner --query password -o tsv)
+spSecret=$(az ad sp create-for-rbac -n $spName --role Contributor --query password -o tsv)
 spId=$(az ad sp show --id http://$spName --query appId -o tsv)
 ```
 
