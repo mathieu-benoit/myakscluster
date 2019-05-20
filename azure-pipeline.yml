@@ -34,6 +34,9 @@ steps:
       --no-ssh-key \
       --service-principal $aksServicePrincipal \
       --client-secret $aksClientSecret
-    az aks enable-addons -a monitoring -n $(aks)-$suffix -g $(rg)-$suffix
     az aks get-credentials -n $(aks)-$suffix -g $(rg)-$suffix
+    # Azure Monitor for containers
+    az aks enable-addons -a monitoring -n $(aks)-$suffix -g $(rg)-$suffix
+    # Kured
+    kubectl apply -f https://github.com/weaveworks/kured/releases/download/1.2.0/kured-1.2.0-dockerhub.yaml
   displayName: 'create rg and aks'
