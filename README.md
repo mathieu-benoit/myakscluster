@@ -2,7 +2,7 @@
 
 # myakscluster
 
-To properly setup and secure your AKS cluster, there is a couple of feature and component to enable, here is the list:
+To properly setup and secure your AKS cluster, there is a couple of features and components to enable, here is the list:
 
 - [X] Service Principal [#6](https://github.com/mathieu-benoit/myakscluster/issues/6)
 - [ ] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
