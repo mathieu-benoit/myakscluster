@@ -17,9 +17,11 @@ steps:
     az account set -s $(subscriptionId)
     suffix=$(shuf -i 1000-9999 -n 1)
     az group create -n $(rg)-$suffix -l $(location)
-    aksClientSecret=$(az ad sp create-for-rbac -n $(aks)-$suffix --skip-assignment --query password -o tsv)
-    aksServicePrincipal=$(az ad sp show --id http://$(aks)-$suffix --query appId -o tsv)
-    az role assignment create --assignee $aksServicePrincipal --role Contributor --scope /subscriptions/$(subscriptionId)/resourceGroups/$(rg)-$suffix
+    #aksClientSecret=$(az ad sp create-for-rbac -n $(aks)-$suffix --skip-assignment --query password -o tsv)
+    aksClientSecret=$(spSecret)
+    #aksServicePrincipal=$(az ad sp show --id http://$(aks)-$suffix --query appId -o tsv)
+    aksServicePrincipal=$(spId)
+    #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope /subscriptions/$(subscriptionId)/resourceGroups/$(rg)-$suffix
     k8sVersion=$(az aks get-versions -l $(location) --query 'orchestrators[-1].orchestratorVersion' -o tsv)
     az aks create \
       -l $(location) \
