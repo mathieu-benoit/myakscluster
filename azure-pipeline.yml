@@ -17,12 +17,12 @@ steps:
   filePath: 'create-aks-cluster.sh'
   displayName: 'create rg and aks'
   env:
-      LOCATION=$(location)
-      NODE_COUNT=$(nodeCount)
-      NODE_SIZE=$(nodeSize)
-      SUBSCRIPTION_ID=$(subscriptionId)
-      SP_ID=$(spId)
-      SP_SECRET=$(spSecret)
-      SP_TENANT_ID=$(spTenantId)
-      AKS=$(aks)
-      RG=$(rg)
+      LOCATION: $(location)
+      NODE_COUNT: $(nodeCount)
+      NODE_SIZE: $(nodeSize)
+      SUBSCRIPTION_ID: $(subscriptionId)
+      SP_ID: $(spId)
+      SP_SECRET: $(spSecret)
+      SP_TENANT_ID: $(spTenantId)
+      AKS: $(aks)
+      RG: $(rg)
