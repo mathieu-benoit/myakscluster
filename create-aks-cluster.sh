@@ -3,11 +3,11 @@ az account set -s $SUBSCRIPTION_ID
 suffix=$(shuf -i 1000-9999 -n 1)
 az group create -n $RG-$suffix -l $LOCATION
 #az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG-$suffix
-#aksClientSecret=$(az ad sp create-for-rbac -n $AKS-$suffix --skip-assignment --query password -o tsv)
-aksClientSecret=$SP_SECRET
-#aksServicePrincipal=$(az ad sp show --id http://$AKS-$suffix --query appId -o tsv)
-aksServicePrincipal=$SP_ID
-#az role assignment create --assignee $aksServicePrincipal --role Contributor --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG-$suffix
+aksClientSecret=$(az ad sp create-for-rbac -n $AKS-$suffix --skip-assignment --query password -o tsv)
+#aksClientSecret=$SP_SECRET
+aksServicePrincipal=$(az ad sp show --id http://$AKS-$suffix --query appId -o tsv)
+#aksServicePrincipal=$SP_ID
+az role assignment create --assignee $aksServicePrincipal --role Contributor --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG-$suffix
 k8sVersion=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orchestratorVersion' -o tsv)
 az aks create \
       -l $LOCATION \
