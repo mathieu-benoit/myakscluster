@@ -22,7 +22,7 @@ steps:
       aksClientSecret=$SP_SECRET
       #aksServicePrincipal=$(az ad sp show --id http://$AKS-$suffix --query appId -o tsv)
       aksServicePrincipal=$SP_ID
-      az role assignment create --assignee $aksServicePrincipal --role Contributor --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG-$suffix
+      #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope /subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RG-$suffix
       k8sVersion=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orchestratorVersion' -o tsv)
       az aks create \
             -l $LOCATION \
