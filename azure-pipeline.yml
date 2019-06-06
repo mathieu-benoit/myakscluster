@@ -35,6 +35,8 @@ steps:
             --service-principal $aksServicePrincipal \
             --client-secret $aksClientSecret
       az aks get-credentials -n $AKS-$suffix -g $RG-$suffix
+      # Disable K8S dashboard
+      az aks disable-addons -a kube-dashboard -n $AKS-$suffix -g $RG-$suffix
       # Azure Monitor for containers
       az aks enable-addons -a monitoring -n $AKS-$suffix -g $RG-$suffix
       # Kured
