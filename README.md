@@ -7,6 +7,7 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [X] Service Principal [#6](https://github.com/mathieu-benoit/myakscluster/issues/6)
 - [ ] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 - [X] kured [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
+- [X] Disable K8S Dashboard [#24](https://github.com/mathieu-benoit/myakscluster/issues/24)
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
 - [ ] Network Policy [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
 - [ ] (Preview) Pod Security Policy [#20](https://github.com/mathieu-benoit/myakscluster/issues/20)
