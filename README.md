@@ -5,6 +5,7 @@
 To properly setup and secure your AKS cluster, there is a couple of features and components to enable to respect the Security Principle of Least Privilege, here is the list:
 
 - [X] Service Principal [#6](https://github.com/mathieu-benoit/myakscluster/issues/6)
+- [X] Azure Lock [#21](https://github.com/mathieu-benoit/myakscluster/issues/21)
 - [ ] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 - [X] kured [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
 - [X] Disable K8S Dashboard [#24](https://github.com/mathieu-benoit/myakscluster/issues/24)
