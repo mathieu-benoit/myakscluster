@@ -33,9 +33,9 @@ location=<location>
 kvName=<kvName>
 rg=<rg>
 az keyvault create -l $location -n $kvName -g $rg
-az keyvault secret set --vault-name $kvName -n subscription-id --value $subscriptionId
-az keyvault secret set --vault-name $kvName -n tenant-id --value $tenantId
-az keyvault secret set --vault-name $kvName -n sp-id --value $spId
+az keyvault secret set --vault-name $kvName -n subscriptionId --value $subscriptionId
+az keyvault secret set --vault-name $kvName -n tenantId --value $tenantId
+az keyvault secret set --vault-name $kvName -n spId --value $spId
 az keyvault secret set --vault-name $kvName -n sp-secret --value $spSecret
 ```
 
