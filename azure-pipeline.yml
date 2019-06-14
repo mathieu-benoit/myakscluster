@@ -9,15 +9,21 @@ variables:
   location: eastus
   nodeCount: 3
   nodeSize: Standard_B2s
-  # define 6 more variables: subscriptionId, spId, spSecret, spTenantId, aks and rg in the pipeline UI definition
+  # define 3 more variables: kv, aks and rg in the pipeline UI definition
 
 steps:
+- task: AzureKeyVault@1
+  displayName: 'Get secrets from Key Vault'
+  inputs:
+    azureSubscription: keyvault
+    KeyVaultName: $(kv)
+    SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
 - task: Bash@3
+  displayName: 'create rg and aks'
   inputs:
     targetType: filePath
     filePath: './create-aks-cluster.sh'
     failOnStderr: true
-  displayName: 'create rg and aks'
   env:
       LOCATION: $(location)
       NODE_COUNT: $(nodeCount)
