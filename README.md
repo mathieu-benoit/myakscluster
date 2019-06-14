@@ -28,6 +28,15 @@ tenantId=$(az account show --query tenantId -o tsv)
 spName=<spName>
 spSecret=$(az ad sp create-for-rbac -n $spName --role Owner --query password -o tsv)
 spId=$(az ad sp show --id http://$spName --query appId -o tsv)
+
+location=<location>
+kvName=<kvName>
+rg=<rg>
+az keyvault create -l $location -n $kvName -g $rg
+az keyvault secret set --vault-name $kvName -n subscription-id --value $subscriptionId
+az keyvault secret set --vault-name $kvName -n tenant-id --value $tenantId
+az keyvault secret set --vault-name $kvName -n sp-id --value $spId
+az keyvault secret set --vault-name $kvName -n sp-secret --value $spSecret
 ```
 
 # Resources
