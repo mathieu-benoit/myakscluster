@@ -38,6 +38,17 @@ az keyvault secret set --vault-name $kvName -n subscriptionId --value $subscript
 az keyvault secret set --vault-name $kvName -n tenantId --value $tenantId
 az keyvault secret set --vault-name $kvName -n spId --value $spId
 az keyvault secret set --vault-name $kvName -n sp-secret --value $spSecret
+
+az devops service-endpoint create --authorization-scheme ServicePrincipal
+                                  --name
+                                  --service-endpoint-type azurerm
+                                  [--azure-rm-service-principal-id]
+                                  [--azure-rm-subscription-id]
+                                  [--azure-rm-subscription-name]
+                                  [--azure-rm-tenant-id]
+                                  [--detect {false, true}]
+                                  [--org]
+                                  [--project]
 ```
 
 # Resources
