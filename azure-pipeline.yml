@@ -1,6 +1,3 @@
-pool:
-  vmImage: 'Ubuntu 16.04'
-
 trigger: none 
 
 pr: none 
@@ -11,33 +8,35 @@ variables:
   nodeSize: Standard_B2s
   # define 3 more variables: kv, aks and rg in the pipeline UI definition
 
-stages:
-- stage: deploy
-  jobs:
-  - job: One
-    steps:
-    - task: AzureKeyVault@1
-      displayName: 'Get secrets from Key Vault'
-      inputs:
-        azureSubscription: keyvault
-        KeyVaultName: $(kv)
-        SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-  - job: Second
-    container: mcr.microsoft.com/azure-cli:latest
-    steps:
-    - task: Bash@3
-      displayName: 'create rg and aks'
-      inputs:
-        targetType: filePath
-        filePath: './create-aks-cluster.sh'
-        failOnStderr: true
-      env:
-          LOCATION: $(location)
-          NODE_COUNT: $(nodeCount)
-          NODE_SIZE: $(nodeSize)
-          SUBSCRIPTION_ID: $(subscriptionId)
-          SP_ID: $(spId)
-          SP_SECRET: $(spSecret)
-          SP_TENANT_ID: $(spTenantId)
-          AKS: $(aks)
-          RG: $(rg)
+jobs:
+- job: One
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  steps:
+  - task: AzureKeyVault@1
+    displayName: 'Get secrets from Key Vault'
+    inputs:
+      azureSubscription: keyvault
+      KeyVaultName: $(kv)
+      SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
+- job: Second
+  pool:
+    vmImage: 'Ubuntu 16.04'
+  container: mcr.microsoft.com/azure-cli:latest
+  steps:
+  - task: Bash@3
+    displayName: 'create rg and aks'
+    inputs:
+      targetType: filePath
+      filePath: './create-aks-cluster.sh'
+      failOnStderr: true
+    env:
+        LOCATION: $(location)
+        NODE_COUNT: $(nodeCount)
+        NODE_SIZE: $(nodeSize)
+        SUBSCRIPTION_ID: $(subscriptionId)
+        SP_ID: $(spId)
+        SP_SECRET: $(spSecret)
+        SP_TENANT_ID: $(spTenantId)
+        AKS: $(aks)
+        RG: $(rg)
