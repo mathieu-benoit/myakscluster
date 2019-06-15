@@ -18,6 +18,8 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [ ] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
 - [ ] (Beta) Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
 
+TODO - img
+
 # Setup
 
 ```
@@ -57,6 +59,16 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
                                   [--org]
                                   [--project]
 ```
+
+# Further considerations
+
+- Azure API Management
+- Azure Front Door
+- Azure Container Registry:
+  - CI's Service Principal (acrpush)
+  - AKS's Service Principal (acrpull)
+  - VNET
+  - Scanning
 
 # Resources
 
