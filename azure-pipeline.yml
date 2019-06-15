@@ -22,7 +22,6 @@ jobs:
 - job: Second
   pool:
     vmImage: 'Ubuntu 16.04'
-  container: mcr.microsoft.com/azure-cli:latest
   steps:
   - task: Bash@3
     displayName: 'create rg and aks'
