@@ -9,7 +9,7 @@ variables:
   # define 3 more variables: kv, aks and rg in the pipeline UI definition
 
 jobs:
-- job: One
+- job: Deploy AKS cluster
   pool:
     vmImage: 'Ubuntu 16.04'
   steps:
@@ -19,11 +19,6 @@ jobs:
       azureSubscription: keyvault
       KeyVaultName: $(kv)
       SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-- job: Second
-  dependsOn: One
-  pool:
-    vmImage: 'Ubuntu 16.04'
-  steps:
   - task: Bash@3
     displayName: 'create rg and aks'
     inputs:
