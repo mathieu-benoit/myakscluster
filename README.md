@@ -41,7 +41,7 @@ az keyvault secret set --vault-name $kvName -n spTenantId --value $tenantId
 az keyvault secret set --vault-name $kvName -n spId --value $spId
 az keyvault secret set --vault-name $kvName -n spSecret --value $spSecret
 
-az keyvault set-policy -n $kvName --spn $spId --secret-permissions {get, list}
+az keyvault set-policy -n $kvName --spn $spId --secret-permissions get list
                        
 az devops service-endpoint create --authorization-scheme ServicePrincipal
                                   --name
