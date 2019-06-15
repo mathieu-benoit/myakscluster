@@ -39,6 +39,13 @@ az keyvault secret set --vault-name $kvName -n tenantId --value $tenantId
 az keyvault secret set --vault-name $kvName -n spId --value $spId
 az keyvault secret set --vault-name $kvName -n sp-secret --value $spSecret
 
+az keyvault set-policy --name
+                       [--object-id]
+                       [--resource-group]
+                       [--secret-permissions {backup, delete, get, list, purge, recover, restore, set}]
+                       [--spn]
+                       [--subscription]
+                       
 az devops service-endpoint create --authorization-scheme ServicePrincipal
                                   --name
                                   --service-endpoint-type azurerm
