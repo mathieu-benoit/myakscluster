@@ -32,6 +32,7 @@ spId=$(az ad sp show --id http://$spName --query appId -o tsv)
 location=<location>
 kvName=<kvName>
 rg=<rg>
+az group create -n $rg -l $location
 az keyvault create -l $location -n $kvName -g $rg
 az keyvault secret set --vault-name $kvName -n subscriptionId --value $subscriptionId
 az keyvault secret set --vault-name $kvName -n tenantId --value $tenantId
