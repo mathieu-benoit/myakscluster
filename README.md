@@ -35,9 +35,9 @@ rg=<rg>
 az group create -n $rg -l $location
 az keyvault create -l $location -n $kvName -g $rg
 az keyvault secret set --vault-name $kvName -n subscriptionId --value $subscriptionId
-az keyvault secret set --vault-name $kvName -n tenantId --value $tenantId
+az keyvault secret set --vault-name $kvName -n spTenantId --value $tenantId
 az keyvault secret set --vault-name $kvName -n spId --value $spId
-az keyvault secret set --vault-name $kvName -n sp-secret --value $spSecret
+az keyvault secret set --vault-name $kvName -n spSecret --value $spSecret
 
 az keyvault set-policy --name
                        [--object-id]
