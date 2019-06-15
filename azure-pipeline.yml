@@ -20,6 +20,7 @@ jobs:
       KeyVaultName: $(kv)
       SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
 - job: Second
+  dependsOn: One
   pool:
     vmImage: 'Ubuntu 16.04'
   steps:
