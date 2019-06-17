@@ -5,10 +5,10 @@ az account set -s $SUBSCRIPTION_ID
 suffix=$(shuf -i 1000-9999 -n 1)
       
 # Manage SP and Roles
-#aksClientSecret=$(az ad sp create-for-rbac -n $AKS-$suffix --skip-assignment --query password -o tsv)
-aksClientSecret=$SP_SECRET
-#aksServicePrincipal=$(az ad sp show --id http://$AKS-$suffix --query appId -o tsv)
-aksServicePrincipal=$SP_ID
+aksClientSecret=$(az ad sp create-for-rbac -n $AKS-$suffix --skip-assignment --query password -o tsv)
+#aksClientSecret=$SP_SECRET
+aksServicePrincipal=$(az ad sp show --id http://$AKS-$suffix --query appId -o tsv)
+#aksServicePrincipal=$SP_ID
       
 # Create Resource Group and Lock
 az group create -n $RG-$suffix -l $LOCATION
@@ -17,7 +17,7 @@ az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG-$suffix
 # Create VNET
 aksVnetId=$(az network vnet create -g $RG-$suffix -n $AKS-$suffix --address-prefixes 192.168.0.0/16 --subnet-name $AKS-$suffix --subnet-prefix 192.168.1.0/24 --query id -o tsv)
 subNetId=$(az network vnet subnet show -g $RG-$suffix -n $AKS-$suffix --vnet-name $AKS-$suffix --query id -o tsv)
-#az role assignment create --assignee $aksServicePrincipal --role Contributor --scope aksVnetId
+az role assignment create --assignee $aksServicePrincipal --role Contributor --scope aksVnetId
       
 # Create the AKS cluster
 k8sVersion=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orchestratorVersion' -o tsv)
