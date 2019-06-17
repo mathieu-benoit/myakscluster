@@ -9,7 +9,7 @@ variables:
   # define 3 more variables: kv, aks and rg in the pipeline UI definition
 
 jobs:
-- job: Deploy AKS cluster
+- job: CreateAKSCluster
   pool:
     vmImage: 'Ubuntu 16.04'
   steps:
