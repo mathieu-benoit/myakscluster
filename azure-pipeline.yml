@@ -5,7 +5,7 @@ pr: none
 variables:
   location: eastus
   nodeCount: 3
-  nodeSize: Standard_B2s
+  nodeSize: Standard_DS2_v2
   # define 3 more variables: kv, aks and rg in the pipeline UI definition
 
 jobs:
