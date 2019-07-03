@@ -52,10 +52,12 @@ stages:
         azureSubscription: keyvault
         KeyVaultName: $(kv)
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-    - script: |
-        echo 'Tests against Azure'
-      displayName: 'Tests against Azure'
-      failOnStderr: true
+    - task: Bash@3
+      displayName: 'test azure infra'
+      inputs:
+        targetType: filePath
+        filePath: './test-azure-infra.sh'
+        failOnStderr: true
       env:
           LOCATION: $(location)
           NODE_COUNT: $(nodeCount)
