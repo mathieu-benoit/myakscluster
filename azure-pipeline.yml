@@ -53,7 +53,7 @@ stages:
         KeyVaultName: $(kv)
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
     - bash: |
-        echo Tests against Azure
+        echo 'Tests against Azure'
       displayName: 'Tests against Azure'
       failOnStderr: true
       env:
@@ -80,7 +80,7 @@ stages:
         KeyVaultName: $(kv)
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
     - bash: |
-        echo Tests against K8S
+        echo 'Tests against K8S'
       displayName: 'Tests against K8S'
       failOnStderr: true
       env:
