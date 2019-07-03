@@ -52,7 +52,7 @@ stages:
         azureSubscription: keyvault
         KeyVaultName: $(kv)
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-    - bash: |
+    - script: |
         echo 'Tests against Azure'
       displayName: 'Tests against Azure'
       failOnStderr: true
@@ -79,7 +79,7 @@ stages:
         azureSubscription: keyvault
         KeyVaultName: $(kv)
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-    - bash: |
+    - script: |
         echo 'Tests against K8S'
       displayName: 'Tests against K8S'
       failOnStderr: true
