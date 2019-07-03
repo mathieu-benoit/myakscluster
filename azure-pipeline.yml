@@ -66,30 +66,3 @@ stages:
           SP_TENANT_ID: $(spTenantId)
           AKS: $(aks)
           RG: $(rg)
- - stage: K8sTests
-  displayName: K8sTests
-  jobs:
-  - job: K8sTests
-    pool:
-      vmImage: $(vmImage)
-    steps:
-    - task: AzureKeyVault@1
-      displayName: 'Get secrets from Key Vault'
-      inputs:
-        azureSubscription: keyvault
-        KeyVaultName: $(kv)
-        SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-    - script: |
-        echo 'Tests against K8S'
-      displayName: 'Tests against K8S'
-      failOnStderr: true
-      env:
-          LOCATION: $(location)
-          NODE_COUNT: $(nodeCount)
-          NODE_SIZE: $(nodeSize)
-          SUBSCRIPTION_ID: $(subscriptionId)
-          SP_ID: $(spId)
-          SP_SECRET: $(spSecret)
-          SP_TENANT_ID: $(spTenantId)
-          AKS: $(aks)
-          RG: $(rg)
