@@ -3,6 +3,7 @@ trigger: none
 pr: none 
 
 variables:
+  vmImage: 'ubuntu-16.04'
   location: eastus
   nodeCount: 3
   nodeSize: Standard_DS2_v2
@@ -14,7 +15,7 @@ stages:
   jobs:
   - job: CreateAKSCluster
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(vmImage)
     steps:
     - task: AzureKeyVault@1
       displayName: 'Get secrets from Key Vault'
@@ -43,7 +44,7 @@ stages:
   jobs:
   - job: AzureTests
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(vmImage)
     steps:
     - task: AzureKeyVault@1
       displayName: 'Get secrets from Key Vault'
@@ -70,7 +71,7 @@ stages:
   jobs:
   - job: K8sTests
     pool:
-      vmImage: 'Ubuntu 16.04'
+      vmImage: $(vmImage)
     steps:
     - task: AzureKeyVault@1
       displayName: 'Get secrets from Key Vault'
