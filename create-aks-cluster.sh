@@ -49,3 +49,6 @@ az aks get-credentials -n $AKS-$suffix -g $RG-$suffix
 # Kured
 kuredVersion=1.2.0
 kubectl apply -f https://github.com/weaveworks/kured/releases/download/$kuredVersion/kured-$kuredVersion-dockerhub.yaml
+
+# Network Policies
+kubectl apply -f np-default-deny-all.yaml
