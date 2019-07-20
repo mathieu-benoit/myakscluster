@@ -14,7 +14,6 @@ stages:
   displayName: CreateAKSCluster
   jobs:
   - job: CreateAKSCluster
-    condition: and(succeeded(), eq(variables.createAksCluster, 'true'))
     pool:
       vmImage: $(vmImage)
     steps:
@@ -44,6 +43,12 @@ stages:
           SP_TENANT_ID: $(spTenantId)
           AKS: $(aksName)
           RG: $(aksName)
+    - bash: |
+        echo $(jq -n --arg aksName "$(aksName)" '{aksName: $aksName}') > $(build.artifactStagingDirectory)/variables.json
+      failOnStderr: true
+      displayName: 'write variables for the next stage'
+    - publish: $(build.artifactStagingDirectory)
+      artifact: variables
 - stage: AzureTests
   displayName: AzureTests
   jobs:
@@ -51,6 +56,13 @@ stages:
     pool:
       vmImage: $(vmImage)
     steps:
+    - download: current
+      artifact: variables
+    - bash: |
+        aksName=$(jq .aksName $(pipeline.workspace)/variables/variables.json -r)
+        echo '##vso[task.setvariable variable=aksName]$aksName'
+      failOnStderr: true
+      displayName: 'get variables from previous stage'
     - task: AzureKeyVault@1
       displayName: 'Get secrets from Key Vault'
       inputs:
@@ -68,5 +80,5 @@ stages:
           SP_ID: $(spId)
           SP_SECRET: $(spSecret)
           SP_TENANT_ID: $(spTenantId)
-          AKS: mabenoitaks
-          RG: mabenoitaks
+          AKS: $(aksName)
+          RG: $(aksName)
