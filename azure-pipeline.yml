@@ -32,7 +32,7 @@ stages:
       inputs:
         targetType: filePath
         filePath: './create-aks-cluster.sh'
-        failOnStderr: true
+        failOnStderr: false
       env:
           LOCATION: $(location)
           NODE_COUNT: $(nodeCount)
