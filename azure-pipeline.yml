@@ -12,9 +12,9 @@ variables:
 stages:
 - stage: CreateAKSCluster
   displayName: CreateAKSCluster
-  condition: and(succeeded(), eq(variables.createAksCluster, 'true'))
   jobs:
   - job: CreateAKSCluster
+    condition: and(succeeded(), eq(variables.createAksCluster, 'true'))
     pool:
       vmImage: $(vmImage)
     steps:
