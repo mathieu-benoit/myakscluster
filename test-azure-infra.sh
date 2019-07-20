@@ -8,8 +8,7 @@ nodeResourceGroup=$(az aks show -g $RG -n $AKS --query nodeResourceGroup -o tsv)
 for nic in $(az resource list -g $nodeResourceGroup --resource-type Microsoft.Network/networkInterfaces --query [].name -o tsv)
 do 
       enabled=$(az network nic show -g $nodeResourceGroup -n $nic --query "enableAcceleratedNetworking")
-      if [ $enabled = "true" ]; then
+      if [ $enabled = "false" ]; then
             1>&2 echo "AcceleratedNetworking not enabled"
       fi 
 done
-        
