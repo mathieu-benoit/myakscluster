@@ -2,7 +2,6 @@
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
 az account set -s $SUBSCRIPTION_ID
-suffix=$(shuf -i 1000-9999 -n 1)
       
 # Manage SP and Roles
 #aksClientSecret=$(az ad sp create-for-rbac -n $AKS --skip-assignment --query password -o tsv)
