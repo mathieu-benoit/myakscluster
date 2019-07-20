@@ -64,12 +64,9 @@ stages:
         filePath: './test-azure-infra.sh'
         failOnStderr: true
       env:
-          LOCATION: $(location)
-          NODE_COUNT: $(nodeCount)
-          NODE_SIZE: $(nodeSize)
           SUBSCRIPTION_ID: $(subscriptionId)
           SP_ID: $(spId)
           SP_SECRET: $(spSecret)
           SP_TENANT_ID: $(spTenantId)
-          AKS: $(aks)
-          RG: $(rg)
+          AKS: mabenoitaks
+          RG: mabenoitaks
