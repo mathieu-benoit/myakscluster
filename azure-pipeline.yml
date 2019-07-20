@@ -25,9 +25,7 @@ stages:
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
     - bash: |
         randomSuffix=$(shuf -i 1000-9999 -n 1)
-        echo $randomSuffix
         echo "##vso[task.setvariable variable=aksName]$(aksPrefix)-$randomSuffix"
-        echo $aksName
       displayName: 'setup aks name'
     - task: Bash@3
       displayName: 'create rg and aks'
@@ -62,7 +60,7 @@ stages:
       artifact: variables
     - bash: |
         aksName=$(jq .aksName $(pipeline.workspace)/variables/variables.json -r)
-        echo '##vso[task.setvariable variable=aksName]$aksName'
+        echo "##vso[task.setvariable variable=aksName]$aksName"
       failOnStderr: true
       displayName: 'get variables from previous stage'
     - task: AzureKeyVault@1
