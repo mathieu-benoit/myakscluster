@@ -25,7 +25,9 @@ stages:
         SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
     - bash: |
         randomSuffix=$(shuf -i 1000-9999 -n 1)
-        echo '##vso[task.setvariable variable=aksName]$(aksPrefix)-$randomSuffix'
+        echo $randomSuffix
+        echo "##vso[task.setvariable variable=aksName]$(aksPrefix)-$randomSuffix"
+        echo $aksName
       displayName: 'setup aks name'
     - task: Bash@3
       displayName: 'create rg and aks'
