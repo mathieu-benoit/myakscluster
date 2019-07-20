@@ -31,7 +31,9 @@ az aks create \
             --no-ssh-key \
             --service-principal $aksServicePrincipal \
             --client-secret $aksClientSecret \
-            --vnet-subnet-id $subNetId
+            --vnet-subnet-id $subNetId \
+            --network-plugin kubenet \
+            --network-policy calico
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS-$suffix -g $RG-$suffix
