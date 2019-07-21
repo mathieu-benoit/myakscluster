@@ -51,4 +51,4 @@ kuredVersion=1.2.0
 kubectl apply -f https://github.com/weaveworks/kured/releases/download/$kuredVersion/kured-$kuredVersion-dockerhub.yaml
 
 # Network Policies
-kubectl apply -f np-default-deny-all.yaml
+kubectl apply -f np-default-deny-all.yml
