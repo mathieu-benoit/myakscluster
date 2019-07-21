@@ -30,7 +30,9 @@ az aks create \
             --no-ssh-key \
             --service-principal $aksServicePrincipal \
             --client-secret $aksClientSecret \
-            --vnet-subnet-id $subNetId
+            --vnet-subnet-id $subNetId \
+            --network-plugin kubenet \
+            --network-policy calico
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
@@ -46,3 +48,7 @@ az aks get-credentials -n $AKS -g $RG
 # Kured
 kuredVersion=1.2.0
 kubectl apply -f https://github.com/weaveworks/kured/releases/download/$kuredVersion/kured-$kuredVersion-dockerhub.yaml
+
+# Network Policies
+# Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
+kubectl apply -f np-deny-all.yml -n default
