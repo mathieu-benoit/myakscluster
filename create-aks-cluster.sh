@@ -51,4 +51,5 @@ kuredVersion=1.2.0
 kubectl apply -f https://github.com/weaveworks/kured/releases/download/$kuredVersion/kured-$kuredVersion-dockerhub.yaml
 
 # Network Policies
-kubectl apply -f np-default-deny-all.yml
+# Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
+kubectl apply -f np-deny-all.yml -n default
