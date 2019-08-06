@@ -77,3 +77,4 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 - [How Spotify Accidentally Deleted All its Kube Clusters with No User Impact](https://www.youtube.com/watch?v=ix0Tw8uinWs)
 - [Introduction to Kubernetes Security with GitOps](https://www.weave.works/blog/intro-kubernetes-security)
 - [Open Sourcing the Kubernetes Security Audit](https://www.cncf.io/blog/2019/08/06/open-sourcing-the-kubernetes-security-audit)
+- [Kubernetes Security book](https://kubernetes-security.info/)
