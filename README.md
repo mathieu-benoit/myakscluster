@@ -56,15 +56,10 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
                                   [--project]
 ```
 
-# Further considerations
+# Other considerations:
 
-- Azure API Management
 - Azure Front Door
-- Azure Container Registry:
-  - CI's Service Principal (acrpush)
-  - AKS's Service Principal (acrpull)
-  - VNET
-  - Scanning
+- [Audit logging in AKS](https://azure.microsoft.com/en-us/updates/audit-logging-in-azure-kubernetes-service-aks-is-now-available/)
 
 # Resources
 
