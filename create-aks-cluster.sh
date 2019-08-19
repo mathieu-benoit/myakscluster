@@ -32,7 +32,11 @@ az aks create \
             --client-secret $aksClientSecret \
             --vnet-subnet-id $subNetId \
             --network-plugin kubenet \
-            --network-policy calico
+            --network-policy calico \
+            --aad-server-app-id $AAD_SERVER_APP_ID \
+            --aad-server-app-secret $AAD_SERVER_APP_SECRET \
+            --aad-client-app-id $AAD_CLIENT_APP_ID \
+            --aad-tenant-id $AAD_TENANT_ID
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
