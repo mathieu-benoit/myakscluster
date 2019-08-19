@@ -22,7 +22,7 @@ stages:
       inputs:
         azureSubscription: keyvault
         KeyVaultName: $(kv)
-        SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
+        SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId,aadServerAppId,aadServerAppSecret,aadClientAppId,aadTenantId'
     - bash: |
         randomSuffix=$(shuf -i 1000-9999 -n 1)
         echo "##vso[task.setvariable variable=aksName]$(aksPrefix)-$randomSuffix"
@@ -41,6 +41,10 @@ stages:
           SP_ID: $(spId)
           SP_SECRET: $(spSecret)
           SP_TENANT_ID: $(spTenantId)
+          AAD_SERVER_APP_ID: $(aadServerAppId)
+          AAD_SERVER_APP_SECRET: $(aadServerAppSecret)
+          AAD_CLIENT_APP_ID: $(aadClientAppId)
+          AAD_TENANT_ID: $(aadTenantId)
           AKS: $(aksName)
           RG: $(aksName)
     - bash: |
