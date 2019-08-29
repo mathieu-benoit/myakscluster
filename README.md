@@ -78,3 +78,4 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 - [Open Sourcing the Kubernetes Security Audit](https://www.cncf.io/blog/2019/08/06/open-sourcing-the-kubernetes-security-audit)
 - [Kubernetes Security book](https://kubernetes-security.info/)
 - https://aka.ms/aks/secure
+- [Exploiting and protecting containers with a few lines of scripting](https://media.ccc.de/v/Camp2019-10178-hacking_containers_and_kubernetes)
