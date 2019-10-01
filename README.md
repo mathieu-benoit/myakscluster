@@ -56,6 +56,11 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
                                   [--project]
 ```
 
+# Pricing estimation
+
+- AKS pricing
+- Log Analytics Workspace
+
 # Other considerations:
 
 - [Regulatory compliance](https://docs.microsoft.com/azure/aks/intro-kubernetes#regulatory-compliance)
