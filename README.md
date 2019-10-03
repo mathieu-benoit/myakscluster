@@ -58,8 +58,17 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 
 # Pricing estimation
 
-- AKS pricing
-- Log Analytics Workspace
+- [AKS](https://azure.microsoft.com/pricing/details/kubernetes-service/)
+  - Free.
+- [Virtual Machine](https://azure.microsoft.com/pricing/details/virtual-machines/linux/) related to AKS worker nodes
+  - Estimation: For 3 Standard_DS2_v2 Ubuntu worker nodes, ~ $xx USD/month
+  - Note: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances/) to reduce the cost of your AKS worker nodes
+- [Log Analytics Workspace]() (related to the Azure Monitor for Containers add-on)
+  - Estimation: For xx GB/month, ~ $xx USD/month
+- [Standard Load Balancer](https://azure.microsoft.com/pricing/details/load-balancer/)
+  - Estimation: TODO
+- [Public IP](https://azure.microsoft.com/pricing/details/ip-addresses/) (related to the SLB)
+  - Estimation: TODO
 
 # Other considerations:
 
