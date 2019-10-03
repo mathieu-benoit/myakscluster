@@ -12,3 +12,16 @@ do
             1>&2 echo "AcceleratedNetworking not enabled"
       fi 
 done
+
+# LB check
+loadBalancerSku=$(az aks show -g $RG -n $AKS --query networkProfile.loadBalancerSku -o tsv)
+if [ $STANDARD_LOAD_BALANCER = "true" ]
+then
+      if [ $loadBalancerSku = "Basic" ]; then
+            1>&2 echo "AcceleratedNetworking not enabled"
+      fi
+else
+      if [ $loadBalancerSku = "Standard" ]; then
+            1>&2 echo "LoadBalancerSku not found as expected"
+      fi
+fi
