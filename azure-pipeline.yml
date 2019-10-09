@@ -8,6 +8,7 @@ variables:
   nodeCount: 3
   nodeSize: Standard_DS2_v2
   standardLoadBalancer: true
+  vmss: true
   # define 3 more variables: kv and aksPrefix in the pipeline UI definition
 
 stages:
@@ -45,6 +46,7 @@ stages:
           AKS: $(aksName)
           RG: $(aksName)
           STANDARD_LOAD_BALANCER: $(standardLoadBalancer)
+          VMSS: $(vmss)
     - bash: |
         echo $(jq -n --arg aksName "$(aksName)" '{aksName: $aksName}') > $(build.artifactStagingDirectory)/variables.json
       failOnStderr: true
@@ -85,3 +87,4 @@ stages:
           AKS: $(aksName)
           RG: $(aksName)
           STANDARD_LOAD_BALANCER: $(standardLoadBalancer)
+          VMSS: $(vmss)
