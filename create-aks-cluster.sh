@@ -26,6 +26,12 @@ if [ $STANDARD_LOAD_BALANCER = "true" ]; then
       loadBalancerSku="standard"
 fi
 
+# Define VM Set Type value
+vmSetType="AvailabilitySet"
+if [ $VMSS = "true" ]; then
+      vmSetType="VirtualMachineScaleSets"
+fi
+
 # Create the AKS cluster
 k8sVersion=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orchestratorVersion' -o tsv)
 az aks create \
@@ -41,7 +47,8 @@ az aks create \
             --vnet-subnet-id $subNetId \
             --network-plugin kubenet \
             --network-policy calico \
-            --load-balancer-sku $loadBalancerSku
+            --load-balancer-sku $loadBalancerSku \
+            --vm-set-type $vmSetType
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
