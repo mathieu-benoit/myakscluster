@@ -17,7 +17,7 @@ az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
       
 # Create VNET
 aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes 192.168.0.0/16 --subnet-name $AKS --subnet-prefix 192.168.1.0/24 --query id -o tsv)
-subNetId=$(az network vnet subnet show -g $RG -n $AKS --vnet-name $AKS --query id -o tsv)
+subNetId=$(az network vnet subnet show -g $RG -n $AKS-aks --vnet-name $AKS --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
 
 # Define LB value
