@@ -15,9 +15,13 @@ aksServicePrincipal=$SP_ID
 az group create -n $RG -l $LOCATION
 az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
       
-# Create VNET
-aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes 192.168.0.0/16 --subnet-name $AKS-aks --subnet-prefix 192.168.1.0/24 --query id -o tsv)
-subNetId=$(az network vnet subnet show -g $RG -n $AKS-aks --vnet-name $AKS --query id -o tsv)
+# Create VNET and Subnets
+vnetPrefix='192.168.1.0/24' #256 ips
+aksSubnetPrefix='192.168.1.0/25' #128 ips
+svcSubnetPrefix='192.168.1.128/25' #128 ips
+aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix --query id -o tsv)
+aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
+az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
 
 # Define LB value
@@ -44,7 +48,7 @@ az aks create \
             --no-ssh-key \
             --service-principal $aksServicePrincipal \
             --client-secret $aksClientSecret \
-            --vnet-subnet-id $subNetId \
+            --vnet-subnet-id $aksSubNetId \
             --network-plugin kubenet \
             --network-policy calico \
             --load-balancer-sku $loadBalancerSku \
