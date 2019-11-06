@@ -52,7 +52,8 @@ az aks create \
             --network-plugin kubenet \
             --network-policy calico \
             --load-balancer-sku $loadBalancerSku \
-            --vm-set-type $vmSetType
+            --vm-set-type $vmSetType \
+            --zones 1 2 3
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
