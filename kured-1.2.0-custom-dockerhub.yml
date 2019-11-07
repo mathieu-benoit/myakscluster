@@ -111,10 +111,11 @@ spec:
                   fieldPath: spec.nodeName
           command:
             - /usr/bin/kured
-            --reboot-days mon,tue,wed,thu,fri 
-            --start-time 9am 
-            --end-time 5pm 
-            --time-zone America/Toronto
+          args:  
+            - --reboot-days=mon,tue,wed,thu,fri 
+            - --start-time=9am 
+            - --end-time=5pm 
+            - --time-zone=America/Toronto
 #            - --alert-filter-regexp=^RebootRequired$
 #            - --blocking-pod-selector=runtime=long,cost=expensive
 #            - --blocking-pod-selector=name=temperamental
