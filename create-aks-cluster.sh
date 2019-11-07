@@ -2,6 +2,11 @@
 
 az --version
 
+# First checks before going anywhere:
+if [ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false"]; then
+      1>&2 echo "Availability Zones should be used with Standard Load Balancer!"
+fi 
+
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
 az account set -s $SUBSCRIPTION_ID
       
