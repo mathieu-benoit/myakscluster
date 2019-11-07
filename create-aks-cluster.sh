@@ -6,6 +6,12 @@ az --version
 if [ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false"]; then
       1>&2 echo "Availability Zones should be used with Standard Load Balancer!"
 fi 
+if [ $ZONES = "true"]; then
+      azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
+      if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
+            1>&2 echo "The location you selected doesn't support Availability Zones!"
+      fi
+fi 
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
 az account set -s $SUBSCRIPTION_ID
