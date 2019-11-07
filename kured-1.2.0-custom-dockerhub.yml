@@ -8,7 +8,7 @@ rules:
 # Allow kubectl to drain/uncordon
 #
 # NB: These permissions are tightly coupled to the bundled version of kubectl; the ones below
-# match https://github.com/kubernetes/kubernetes/blob/v1.12.1/pkg/kubectl/cmd/drain.go
+# match https://github.com/kubernetes/kubernetes/blob/v1.14.1/pkg/kubectl/cmd/drain/drain.go
 #
 - apiGroups: [""]
   resources: ["nodes"]
@@ -16,7 +16,7 @@ rules:
 - apiGroups: [""]
   resources: ["pods"]
   verbs:     ["list","delete","get"]
-- apiGroups: ["extensions"]
+- apiGroups: ["apps"]
   resources: ["daemonsets"]
   verbs:     ["get"]
 - apiGroups: [""]
@@ -43,7 +43,7 @@ metadata:
   name: kured
 rules:
 # Allow kured to lock/unlock itself
-- apiGroups:     ["extensions"]
+- apiGroups:     ["apps"]
   resources:     ["daemonsets"]
   resourceNames: ["kured"]
   verbs:         ["update"]
@@ -98,7 +98,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: kured
-          image: docker.io/weaveworks/kured:1.2.0
+          image: weaveworks/kured:master-4beddb5 #docker.io/weaveworks/kured:1.2.0
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true # Give permission to nsenter /proc/1/ns/mnt
@@ -111,6 +111,11 @@ spec:
                   fieldPath: spec.nodeName
           command:
             - /usr/bin/kured
+          args:  
+            - --reboot-days=mon,tue,wed,thu,fri 
+            - --start-time=9am 
+            - --end-time=5pm 
+            - --time-zone=America/Toronto
 #            - --alert-filter-regexp=^RebootRequired$
 #            - --blocking-pod-selector=runtime=long,cost=expensive
 #            - --blocking-pod-selector=name=temperamental
