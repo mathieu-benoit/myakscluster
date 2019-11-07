@@ -67,7 +67,7 @@ az aks get-credentials -n $AKS -g $RG --admin
       
 # Kured
 kuredVersion=1.2.0
-kubectl apply -f https://github.com/weaveworks/kured/releases/download/$kuredVersion/kured-$kuredVersion-dockerhub.yaml
+kubectl apply -f kured-$kuredVersion-custom-dockerhub.yaml
 
 # Network Policies
 # Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
