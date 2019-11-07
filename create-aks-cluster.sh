@@ -41,6 +41,12 @@ if [ $VMSS = "true" ]; then
       vmSetType="VirtualMachineScaleSets"
 fi
 
+# Define Zones value
+zones=""
+if [ $ZONES = "true"]; then
+      zones="--zones 1 2 3"
+fi
+
 # Create the AKS cluster
 k8sVersion=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orchestratorVersion' -o tsv)
 az aks create \
@@ -58,7 +64,7 @@ az aks create \
             --network-policy calico \
             --load-balancer-sku $loadBalancerSku \
             --vm-set-type $vmSetType \
-            --zones 1 2 3
+            $zones
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
