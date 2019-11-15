@@ -5,10 +5,10 @@ sudo apt-get update
 sudo apt-get install azure-cli
 
 # First checks before going anywhere:
-if [ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false"]; then
+if [[ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false" ]]; then
       1>&2 echo "Availability Zones should be used with Standard Load Balancer!"
 fi 
-if [ $ZONES = "true"]; then
+if [[ $ZONES = "true" ]]; then
       azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
       if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
             1>&2 echo "The location you selected doesn't support Availability Zones!"
