@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Make sure we have the latest Azure CLI version
+# Make sure we have the latest Azure CLI version, for example 2.0.76 is required for Availability Zones.
+sudo apt-get update
 sudo apt-get install azure-cli
 
 # First checks before going anywhere:
