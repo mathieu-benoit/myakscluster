@@ -1,6 +1,19 @@
 #!/bin/bash
 
-az --version
+# Make sure we have the latest Azure CLI version, for example 2.0.76 is required for Availability Zones.
+sudo apt-get update
+sudo apt-get install azure-cli
+
+# First checks before going anywhere:
+if [[ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false" ]]; then
+      1>&2 echo "Availability Zones should be used with Standard Load Balancer!"
+fi 
+if [[ $ZONES = "true" ]]; then
+      azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
+      if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
+            1>&2 echo "The location you selected doesn't support Availability Zones!"
+      fi
+fi 
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
 az account set -s $SUBSCRIPTION_ID
@@ -36,6 +49,12 @@ if [ $VMSS = "true" ]; then
       vmSetType="VirtualMachineScaleSets"
 fi
 
+# Define Zones value
+zones=""
+if [ $ZONES = "true"]; then
+      zones="--zones 1 2 3"
+fi
+
 # Create the AKS cluster
 k8sVersion=$(az aks get-versions -l $LOCATION --query 'orchestrators[-1].orchestratorVersion' -o tsv)
 az aks create \
@@ -52,7 +71,8 @@ az aks create \
             --network-plugin kubenet \
             --network-policy calico \
             --load-balancer-sku $loadBalancerSku \
-            --vm-set-type $vmSetType
+            --vm-set-type $vmSetType \
+            $zones
       
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG

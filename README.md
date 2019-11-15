@@ -60,15 +60,20 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 
 - [AKS](https://azure.microsoft.com/pricing/details/kubernetes-service/)
   - Free.
-- [Virtual Machine](https://azure.microsoft.com/pricing/details/virtual-machines/linux/) related to AKS worker nodes
+- [Virtual Machines](https://azure.microsoft.com/pricing/details/virtual-machines/linux/) related to AKS worker nodes
   - Estimation: For 3 Standard_DS2_v2 Ubuntu worker nodes, ~ $xx USD/month
-  - Note: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances/) to reduce the cost of your AKS worker nodes
-- [Log Analytics Workspace]() (related to the Azure Monitor for Containers add-on)
+  - To decrease the cost: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances/) to reduce the cost of your AKS worker nodes
+- [Log Analytics Workspace](https://azure.microsoft.com/pricing/details/monitor/) (related to the Azure Monitor for Containers add-on)
   - Estimation: For xx GB/month, ~ $xx USD/month
+  - To decrease the cost: you may want to leverage [logs filtering](https://docs.microsoft.com/azure/azure-monitor/insights/container-insights-agent-config) or [retention by data type](https://docs.microsoft.com/azure/azure-monitor/platform/manage-cost-storage#retention-by-data-type)
 - [Standard Load Balancer](https://azure.microsoft.com/pricing/details/load-balancer/)
   - Estimation: TODO
+  - To decrease the cost: you may want to leverage Basic Load Balancer instead which is free but you won't be able to use Availability Zones nor VNET Peering features
 - [Public IP](https://azure.microsoft.com/pricing/details/ip-addresses/) (related to the SLB)
   - Estimation: TODO
+- [Bandwidth](https://azure.microsoft.com/pricing/details/bandwidth/) (related to Availability Zones)
+  - Estimation: TODO
+  - Note: you may want to leverage PodAffinity to avoid cross-zones communications with Pods too chatty
 
 # Other considerations:
 
