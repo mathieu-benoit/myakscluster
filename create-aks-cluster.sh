@@ -1,11 +1,9 @@
 #!/bin/bash
 
+# Make sure we have the latest Azure CLI version
+sudo apt-get install azure-cli
+
 # First checks before going anywhere:
-azVersion=$(az --version | grep azure-cli | sed 's/azure-cli//g;s/ //g' | head -1)
-echo $azVersion
-if [ ! $azVersion = "2.0.76" ]; then
-      1>&2 echo "Azure CLI version should be 2.0.76!" # for Availability Zones
-fi
 if [ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false"]; then
       1>&2 echo "Availability Zones should be used with Standard Load Balancer!"
 fi 
