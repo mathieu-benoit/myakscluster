@@ -4,7 +4,7 @@ pr: none
 
 variables:
   vmImage: 'ubuntu-16.04'
-  location: canadaeast
+  location: canadacentral
   nodeCount: 3
   nodeSize: Standard_DS2_v2
   standardLoadBalancer: true
