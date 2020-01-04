@@ -51,12 +51,12 @@ fi
 
 # Define Zones value
 zones=""
-if [ $ZONES = "true"]; then
+if [ $ZONES = "true" ]; then
       zones="--zones 1 2 3"
 fi
 
 # Create the AKS cluster
-k8sVersion=$(az aks get-versions -l canadaeast --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
+k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
 az aks create \
             -l $LOCATION \
             -n $AKS \
@@ -78,7 +78,7 @@ az aks create \
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
       
 # Azure Monitor for containers
-workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
+workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LA_LOCATION --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
 az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
       
@@ -87,7 +87,7 @@ az aks get-credentials -n $AKS -g $RG --admin
       
 # Kured
 kuredVersion=1.2.0
-kubectl apply -f kured-$kuredVersion-custom-dockerhub.yaml
+kubectl apply -f kured-$kuredVersion-custom-dockerhub.yml
 
 # Network Policies
 # Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
