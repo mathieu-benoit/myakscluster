@@ -56,7 +56,7 @@ if [ $ZONES = "true"]; then
 fi
 
 # Create the AKS cluster
-k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview!='true'].orchestratorVersion | [-1]" -o tsv)
+k8sVersion=$(az aks get-versions -l canadaeast --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
 az aks create \
             -l $LOCATION \
             -n $AKS \
