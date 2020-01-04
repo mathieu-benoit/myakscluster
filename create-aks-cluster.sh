@@ -78,7 +78,7 @@ az aks create \
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
       
 # Azure Monitor for containers
-workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LA_LOCATION --query id -o tsv)
+workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
 az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
       
