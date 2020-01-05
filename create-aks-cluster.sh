@@ -82,6 +82,10 @@ workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
 az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
       
+# Azure Container Registry (ACR)
+acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
+az aks update -g $RG -n $AKS --attach-acr $acrId
+
 # Get kubeconfig to be able to run following kubectl commands
 az aks get-credentials -n $AKS -g $RG --admin
       
