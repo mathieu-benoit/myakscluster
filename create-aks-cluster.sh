@@ -91,7 +91,8 @@ az aks get-credentials -n $AKS -g $RG --admin
       
 # Kured
 kuredVersion=1.2.0
-kubectl apply -f kured-$kuredVersion-custom-dockerhub.yml
+kubectl create ns kured
+kubectl apply -f kured-$kuredVersion-custom-dockerhub.yml -n kured
 
 # Network Policies
 # Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
