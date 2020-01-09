@@ -92,7 +92,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: kured
-          image: weaveworks/kured:master-4beddb5 #docker.io/weaveworks/kured:1.2.0
+          image: weaveworks/kured:master-f6e4062 #docker.io/weaveworks/kured:1.2.0
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true # Give permission to nsenter /proc/1/ns/mnt
