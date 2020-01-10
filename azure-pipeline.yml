@@ -54,6 +54,7 @@ stages:
           STANDARD_LOAD_BALANCER: $(standardLoadBalancer)
           VMSS: $(vmss)
           ZONES: $(zones)
+          KURED_WEB_HOOK_URL: $(kuredWebHookUrl)
     - bash: |
         echo $(jq -n --arg aksName "$(aksName)" '{aksName: $aksName}') > $(build.artifactStagingDirectory)/variables.json
       failOnStderr: true
