@@ -109,7 +109,7 @@ helm install kured stable/kured \
             --set tolerations[2].effect=NoExecute \
             --set tolerations[3].operator=Exists \
             --set tolerations[3].effect=NoSchedule \
-            --set extraArgs.slack-hook-url=$teamsWebHook
+            --set extraArgs.slack-hook-url=$KURED_WEB_HOOK_URL
 
 # Network Policies
 # Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
