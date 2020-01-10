@@ -10,6 +10,7 @@ variables:
   standardLoadBalancer: true
   vmss: true
   zones: false
+  helmVersion: 3.0.2
   # define 3 more variables: kv and aksPrefix in the pipeline UI definition
 
 stages:
@@ -30,6 +31,10 @@ stages:
         randomSuffix=$(shuf -i 1000-9999 -n 1)
         echo "##vso[task.setvariable variable=aksName]$(aksPrefix)$randomSuffix"
       displayName: 'setup aks name'
+    - task: HelmInstaller@1
+      displayName: 'install helm'
+      inputs:
+        helmVersionToInstall: $(helmVersion)
     - task: Bash@3
       displayName: 'create rg and aks'
       inputs:
