@@ -92,6 +92,7 @@ az aks get-credentials -n $AKS -g $RG --admin
 # Kured
 kuredVersion=master-f6e4062 #1.2.0
 kubectl create ns kured
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 helm install kured stable/kured \
             -n kured \
