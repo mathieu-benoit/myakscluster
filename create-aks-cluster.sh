@@ -90,7 +90,7 @@ az aks update -g $RG -n $AKS --attach-acr $acrId
 az aks get-credentials -n $AKS -g $RG --admin
       
 # Kured
-kuredVersion=master-f6e4062 #1.2.0
+kuredVersion=1.3.0
 kubectl create ns kured
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
