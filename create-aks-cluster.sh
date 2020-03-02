@@ -29,13 +29,109 @@ az group create -n $RG -l $LOCATION
 az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
       
 # Create VNET and Subnets
-vnetPrefix='192.168.1.0/24' #256 ips
+vnetPrefix='192.168.1.0/23' #512 ips
 aksSubnetPrefix='192.168.1.0/25' #128 ips
 svcSubnetPrefix='192.168.1.128/25' #128 ips
 aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix --query id -o tsv)
+#az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
 aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
 az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
-#az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
+fwSubnetPrefix='192.168.2.0/25' #128 ips
+fwSubnetName="AzureFirewallSubnet" # DO NOT CHANGE FWSUBNET_NAME - This is currently a requirement for Azure Firewall.
+az network vnet subnet create -g $RG --vnet-name $AKS -n $fwSubnetName --address-prefixes $fwSubnetPrefix
+
+# Create the Azure Firewall
+az extension add --name azure-firewall
+az network public-ip create -g $RG -n $AKS-fw-ip -l $LOCATION --sku "Standard"
+az network firewall create -g $RG -n $AKS -l $LOCATION
+az network firewall ip-config create -g $RG -f $AKS -n $AKS-fw-ip --public-ip-address $AKS-fw-ip --vnet-name $AKS # it's taking a long time...
+fwPublicIp=$(az network public-ip show -g $RG -n $AKS-fw-ip --query "ipAddress" -o tsv)
+fwPrivateIp=$(az network firewall show -g $RG -n $AKS --query "ipConfigurations[0].privateIpAddress" -o tsv)
+# Create UDR & Routing Table for Azure Firewall
+az network route-table create -g $RG --name $FWROUTE_TABLE_NAME
+az network route-table route create -g $RG --name $FWROUTE_NAME --route-table-name $FWROUTE_TABLE_NAME --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address $fwPrivateIp --subscription $SUBID
+# Create the Outbound Network Rule from Worker Nodes to Control Plane
+az network firewall network-rule create -g $RG -f $AKS --collection-name 'aksfwnr1' -n 'ssh' --protocols 'TCP' --source-addresses '*' --destination-addresses '*' --destination-ports 9000 443 --action allow --priority 100
+az network firewall network-rule create -g $RG -f $AKS --collection-name 'aksfwnr2' -n 'dns' --protocols 'UDP' --source-addresses '*' --destination-addresses '*' --destination-ports 53 --action allow --priority 200
+az network firewall network-rule create -g $RG -f $AKS --collection-name 'aksfwnr3' -n 'gitssh' --protocols 'TCP' --source-addresses '*' --destination-addresses '*' --destination-ports 22 --action allow --priority 300
+az network firewall network-rule create -g $RG -f $AKS --collection-name 'aksfwnr4' -n 'fileshare' --protocols 'TCP' --source-addresses '*' --destination-addresses '*' --destination-ports 445 --action allow --priority 400
+az network firewall application-rule create -g $RG -f $AKS \
+    --collection-name 'AKS_Global_Required' \
+    --action allow \
+    --priority 100 \
+    -n 'required' \
+    --source-addresses '*' \
+    --protocols 'http=80' 'https=443' \
+    --target-fqdns \
+        #'aksrepos.azurecr.io' \
+        #'*blob.core.windows.net' \
+        'mcr.microsoft.com' \
+        #'*cdn.mscr.io' \
+        '*.data.mcr.microsoft.com' \
+        'management.azure.com' \
+        'login.microsoftonline.com' \
+        'ntp.ubuntu.com' \
+        'packages.microsoft.com' \
+        'acs-mirror.azureedge.net'
+az network firewall application-rule create -g $RG -f $AKS \
+    --collection-name 'AKS_Cloud_Specific_Required' \
+    --action allow \
+    --priority 200 \
+    -n 'required' \
+    --source-addresses '*' \
+    --protocols 'http=80' 'https=443' \
+    --target-fqdns \
+        '*.hcp.$LOCATION.azmk8s.io' \
+        '*.tun.$LOCATION.azmk8s.io'
+az network firewall application-rule create -g $RG -f $AKS \
+    --collection-name 'AKS_Update_Required' \
+    --action allow \
+    --priority 300 \
+    -n 'ubuntu' \
+    --source-addresses '*' \
+    --protocols 'http=80' 'https=443' \
+    --target-fqdns \
+        'security.ubuntu.com' \
+        'azure.archive.ubuntu.com' \
+        'changelogs.ubuntu.com'
+az network firewall application-rule create -g $RG -f $AKS \
+    --collection-name 'AKS_Azure_Monitor_Required' \
+    --action allow \
+    --priority 500 \
+    -n 'azure_monitor' \
+    --source-addresses '*' \
+    --protocols 'https=443' \
+    --target-fqdns \
+        'dc.services.visualstudio.com' \
+        '*.ods.opinsights.azure.com' \
+        '*.oms.opinsights.azure.com' \
+        '*.microsoftonline.com' \
+        '*.monitoring.azure.com'
+az network firewall application-rule create -g $RG -f $AKS \
+    --collection-name 'AKS_For_Public_Container_Registries_Required' \
+    --action allow \
+    --priority 600 \
+    -n 'registries' \
+    --source-addresses '*' \
+    --protocols 'https=443' \
+    --target-fqdns \
+        #'*auth.docker.io' \
+        #'*cloudflare.docker.io' \
+        #'*cloudflare.docker.com' \
+        #'*registry-1.docker.io' \
+        #'apt.dockerproject.org' \
+        #'gcr.io' \
+        #'storage.googleapis.com' \
+        #'*.quay.io' \
+        #'quay.io' \
+        #'*.cloudfront.net' \
+        '*.azurecr.io' #\
+        #'*.gk.azmk8s.io' \
+        #'raw.githubusercontent.com' \
+        #'gov-prod-policy-data.trafficmanager.net' \
+        #'api.snapcraft.io'
+# Associate AKS Subnet to FW
+az network vnet subnet update -g $RG --route-table $FWROUTE_TABLE_NAME --ids $aksSubNetId
 
 # Define LB value
 loadBalancerSku="basic"
