@@ -32,11 +32,12 @@ az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
 vnetPrefix='192.168.1.0/23' #512 ips
 aksSubnetPrefix='192.168.1.0/25' #128 ips
 svcSubnetPrefix='192.168.1.128/25' #128 ips
+fwSubnetPrefix='192.168.2.0/26' #64 ips
 aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
 aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
 az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
-fwSubnetPrefix='192.168.2.0/25' #128 ips
+
 fwSubnetName="AzureFirewallSubnet" # DO NOT CHANGE FWSUBNET_NAME - This is currently a requirement for Azure Firewall.
 az network vnet subnet create -g $RG --vnet-name $AKS -n $fwSubnetName --address-prefixes $fwSubnetPrefix
 
