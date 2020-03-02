@@ -11,7 +11,7 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [X] Disable K8S Dashboard [#24](https://github.com/mathieu-benoit/myakscluster/issues/24)
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
 - [X] Network Policy [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
-- [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
+- [X] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 - [ ] (Preview) Pod Security Policy [#20](https://github.com/mathieu-benoit/myakscluster/issues/20)
 - [ ] (Preview) IP whitelisting for Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
 - [ ] (Preview) Azure Policy [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
@@ -69,7 +69,10 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 - [Standard Load Balancer](https://azure.microsoft.com/pricing/details/load-balancer/)
   - Estimation: TODO
   - To decrease the cost: you may want to leverage Basic Load Balancer instead which is free but you won't be able to use Availability Zones nor VNET Peering features
+- [Azure Firewall](https://azure.microsoft.com/pricing/details/azure-firewall/)
+  - Estimation: TODO
 - [Public IP](https://azure.microsoft.com/pricing/details/ip-addresses/) (related to the SLB)
+  - Related to the SLB + FW
   - Estimation: TODO
 - [Bandwidth](https://azure.microsoft.com/pricing/details/bandwidth/) (related to Availability Zones)
   - Estimation: TODO
