@@ -71,7 +71,7 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
   - To decrease the cost: you may want to leverage Basic Load Balancer instead which is free but you won't be able to use Availability Zones nor VNET Peering features
 - [Azure Firewall](https://azure.microsoft.com/pricing/details/azure-firewall/)
   - Estimation: TODO
-- [Public IP](https://azure.microsoft.com/pricing/details/ip-addresses/) (related to the SLB)
+- [Public IP](https://azure.microsoft.com/pricing/details/ip-addresses/)
   - Related to the SLB + FW
   - Estimation: TODO
 - [Bandwidth](https://azure.microsoft.com/pricing/details/bandwidth/) (related to Availability Zones)
