@@ -49,8 +49,8 @@ if [[ $AZURE_FIREWALL = "true" ]]; then
       fwPublicIp=$(az network public-ip show -g $RG -n $AKS-fw-ip --query "ipAddress" -o tsv)
       fwPrivateIp=$(az network firewall show -g $RG -n $AKS --query "ipConfigurations[0].privateIpAddress" -o tsv)
       # Create UDR & Routing Table for Azure Firewall
-      az network route-table create -g $RG --name $FWROUTE_TABLE_NAME
-      az network route-table route create -g $RG --name $FWROUTE_NAME --route-table-name $FWROUTE_TABLE_NAME --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address $fwPrivateIp --subscription $SUBID
+      az network route-table create -g $RG --name $AKS
+      az network route-table route create -g $RG --name $AKS --route-table-name $AKS --address-prefix 0.0.0.0/0 --next-hop-type VirtualAppliance --next-hop-ip-address $fwPrivateIp --subscription $SUBSCRIPTION_ID
       # Create the Outbound Network Rule from Worker Nodes to Control Plane
       az network firewall network-rule create -g $RG -f $AKS --collection-name 'aksfwnr1' -n 'ssh' --protocols 'TCP' --source-addresses '*' --destination-addresses '*' --destination-ports 9000 443 --action allow --priority 100
       az network firewall network-rule create -g $RG -f $AKS --collection-name 'aksfwnr2' -n 'dns' --protocols 'UDP' --source-addresses '*' --destination-addresses '*' --destination-ports 53 --action allow --priority 200
@@ -132,7 +132,7 @@ if [[ $AZURE_FIREWALL = "true" ]]; then
               #'gov-prod-policy-data.trafficmanager.net' \
               #'api.snapcraft.io'
       # Associate AKS Subnet to FW
-      az network vnet subnet update -g $RG --route-table $FWROUTE_TABLE_NAME --ids $aksSubNetId
+      az network vnet subnet update -g $RG --route-table $AKS --ids $aksSubNetId
 fi
 
 # Define LB value
