@@ -82,8 +82,8 @@ if [[ $AZURE_FIREWALL = "true" ]]; then
           --source-addresses '*' \
           --protocols 'http=80' 'https=443' \
           --target-fqdns \
-              '*.hcp.$LOCATION.azmk8s.io' \
-              '*.tun.$LOCATION.azmk8s.io'
+              '*.hcp.canadacentral.azmk8s.io' \
+              '*.tun.canadacentral.azmk8s.io'
       az network firewall application-rule create -g $RG -f $AKS \
           --collection-name 'AKS_Update_Required' \
           --action allow \
