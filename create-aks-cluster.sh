@@ -64,10 +64,7 @@ if [[ $AZURE_FIREWALL = "true" ]]; then
           --source-addresses '*' \
           --protocols 'http=80' 'https=443' \
           --target-fqdns \
-              #'aksrepos.azurecr.io' \
-              #'*blob.core.windows.net' \
               'mcr.microsoft.com' \
-              #'*cdn.mscr.io' \
               '*.data.mcr.microsoft.com' \
               'management.azure.com' \
               'login.microsoftonline.com' \
@@ -116,21 +113,7 @@ if [[ $AZURE_FIREWALL = "true" ]]; then
           --source-addresses '*' \
           --protocols 'https=443' \
           --target-fqdns \
-              #'*auth.docker.io' \
-              #'*cloudflare.docker.io' \
-              #'*cloudflare.docker.com' \
-              #'*registry-1.docker.io' \
-              #'apt.dockerproject.org' \
-              #'gcr.io' \
-              #'storage.googleapis.com' \
-              #'*.quay.io' \
-              #'quay.io' \
-              #'*.cloudfront.net' \
-              '*.azurecr.io' #\
-              #'*.gk.azmk8s.io' \
-              #'raw.githubusercontent.com' \
-              #'gov-prod-policy-data.trafficmanager.net' \
-              #'api.snapcraft.io'
+              '*.azurecr.io'
       # Associate AKS Subnet to FW
       az network vnet subnet update -g $RG --route-table $AKS --ids $aksSubNetId
 fi
