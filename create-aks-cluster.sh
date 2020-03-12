@@ -68,7 +68,7 @@ az aks create \
             --service-principal $aksServicePrincipal \
             --client-secret $aksClientSecret \
             --vnet-subnet-id $aksSubNetId \
-            --network-plugin kubenet \
+            --network-plugin azure \
             --network-policy calico \
             --load-balancer-sku $loadBalancerSku \
             --vm-set-type $vmSetType \
