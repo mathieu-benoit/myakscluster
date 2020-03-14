@@ -29,9 +29,9 @@ az group create -n $RG -l $LOCATION
 az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
       
 # Create VNET and Subnets
-vnetPrefix='192.168.1.0/24' #256 ips
-aksSubnetPrefix='192.168.1.0/25' #128 ips
-svcSubnetPrefix='192.168.1.128/25' #128 ips
+vnetPrefix='192.168.1.0/21' #2048 ips
+aksSubnetPrefix='192.168.1.0/23' #512 ips
+svcSubnetPrefix='192.168.3.0/24' #256 ips
 aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix --query id -o tsv)
 aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
 az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
