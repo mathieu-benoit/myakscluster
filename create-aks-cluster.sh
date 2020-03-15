@@ -67,6 +67,7 @@ az aks create \
             --no-ssh-key \
             --service-principal $aksServicePrincipal \
             --client-secret $aksClientSecret \
+            --enable-private-cluster \
             --vnet-subnet-id $aksSubNetId \
             --network-plugin azure \
             --network-policy calico \
@@ -85,33 +86,3 @@ az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $works
 # Azure Container Registry (ACR)
 acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
 az aks update -g $RG -n $AKS --attach-acr $acrId
-
-# Get kubeconfig to be able to run following kubectl commands
-az aks get-credentials -n $AKS -g $RG --admin
-      
-# Kured
-kuredVersion=1.3.0
-kubectl create ns kured
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm repo update
-helm install kured stable/kured \
-            -n kured \
-            --set image.tag=$kuredVersion \
-            --set nodeSelector."beta\.kubernetes\.io/os"=linux \
-            --set extraArgs.start-time=9am \
-            --set extraArgs.end-time=5pm \
-            --set extraArgs.time-zone=America/Toronto \
-            --set extraArgs.reboot-days="mon\,tue\,wed\,thu\,fri" \
-            --set tolerations[0].effect=NoSchedule \
-            --set tolerations[0].key=node-role.kubernetes.io/master \
-            --set tolerations[1].operator=Exists \
-            --set tolerations[1].key=CriticalAddonsOnly \
-            --set tolerations[2].operator=Exists \
-            --set tolerations[2].effect=NoExecute \
-            --set tolerations[3].operator=Exists \
-            --set tolerations[3].effect=NoSchedule \
-            --set extraArgs.slack-hook-url=$KURED_WEB_HOOK_URL
-
-# Network Policies
-# Example do deny all both ingress and egress on a specific namespace (default here), should be applied to any new namespace.
-kubectl apply -f np-deny-all.yml -n default
