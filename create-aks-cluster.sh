@@ -5,9 +5,6 @@ sudo apt-get update
 sudo apt-get install azure-cli
 
 # First checks before going anywhere:
-if [[ $ZONES = "true" && $STANDARD_LOAD_BALANCER = "false" ]]; then
-      1>&2 echo "Availability Zones should be used with Standard Load Balancer!"
-fi 
 if [[ $ZONES = "true" ]]; then
       azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
       if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
@@ -37,18 +34,6 @@ aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS 
 az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
 
-# Define LB value
-loadBalancerSku="basic"
-if [ $STANDARD_LOAD_BALANCER = "true" ]; then
-      loadBalancerSku="standard"
-fi
-
-# Define VM Set Type value
-vmSetType="AvailabilitySet"
-if [ $VMSS = "true" ]; then
-      vmSetType="VirtualMachineScaleSets"
-fi
-
 # Define Zones value
 zones=""
 if [ $ZONES = "true" ]; then
@@ -71,8 +56,8 @@ az aks create \
             --vnet-subnet-id $aksSubNetId \
             --network-plugin azure \
             --network-policy calico \
-            --load-balancer-sku $loadBalancerSku \
-            --vm-set-type $vmSetType \
+            --load-balancer-sku standard \
+            --vm-set-type VirtualMachineScaleSets \
             $zones
       
 # Disable K8S dashboard
