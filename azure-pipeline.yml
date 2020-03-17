@@ -7,10 +7,7 @@ variables:
   location: canadacentral
   nodeCount: 3
   nodeSize: Standard_DS2_v2
-  standardLoadBalancer: true
-  vmss: true
   zones: false
-  helmVersion: 3.0.2
   # define 3 more variables: kv and aksPrefix in the pipeline UI definition
 
 stages:
@@ -51,8 +48,6 @@ stages:
           SP_TENANT_ID: $(spTenantId)
           AKS: $(aksName)
           RG: $(aksName)
-          STANDARD_LOAD_BALANCER: $(standardLoadBalancer)
-          VMSS: $(vmss)
           ZONES: $(zones)
           KURED_WEB_HOOK_URL: $(kuredWebHookUrl)
     - bash: |
@@ -94,6 +89,4 @@ stages:
           SP_TENANT_ID: $(spTenantId)
           AKS: $(aksName)
           RG: $(aksName)
-          STANDARD_LOAD_BALANCER: $(standardLoadBalancer)
-          VMSS: $(vmss)
           ZONES: $(zones)
