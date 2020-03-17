@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Make sure we have the latest Azure CLI version, for example 2.0.76 is required for Availability Zones.
+# Make sure we have the latest Azure CLI version, for example 2.2.0 is required for Private cluster.
 sudo apt-get update
 sudo apt-get install azure-cli
 
