@@ -59,15 +59,71 @@ az aks create \
             --load-balancer-sku standard \
             --vm-set-type VirtualMachineScaleSets \
             $zones
-      
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
-      
 # Azure Monitor for containers
 workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
 az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
-      
+
 # Azure Container Registry (ACR)
 acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
 az aks update -g $RG -n $AKS --attach-acr $acrId
+
+# Azure VM Jumpbox
+name=mabenoitjumbox
+az group create \
+  -n $name \
+  -l $LOCATION
+az network vnet create \
+  -n $name \
+  -g $name \
+  --address-prefixes 10.1.0.0/27 \
+  --subnet-name $name \
+  --subnet-prefix 10.1.0.0/27
+az vm create \
+  -n $name \
+  -g $name \
+  --image UbuntuLTS \
+  --subnet $name \
+  --vnet-name $name \
+  --custom-data cloud-init.txt \
+  --ssh-key-values id_rsa.pub
+az network nsg rule update \
+  --name default-allow-ssh \
+  --nsg-name ${name}NSG \
+  -g $name \
+  --access Deny
+vNet1Id=$(az network vnet show \
+  --resource-group $name \
+  --name $name \
+  --query id --out tsv)
+vNet2Id=$(az network vnet show \
+  --resource-group $aks \
+  --name $aks \
+  --query id --out tsv)
+az network vnet peering create \
+  -n jumpbox-aks \
+  -g $name \
+  --vnet-name $name \
+  --remote-vnet $vNet2Id \
+  --allow-vnet-access
+az network vnet peering create \
+  -n aks-jumpbox \
+  -g $aks \
+  --vnet-name $aks \
+  --remote-vnet $vNet1Id \
+  --allow-vnet-access
+aksNodesResourceGroup=$(az aks show \
+  -n $aks \
+  -g $aks \
+  --query nodeResourceGroup -o tsv) 
+aksPrivateDnsZone=$(az network private-dns zone list \
+    --resource-group $aksNodesResourceGroup \
+    --query [0].name -o tsv)
+az network private-dns link vnet create \
+  --name $name \
+  --resource-group $aksNodesResourceGroup \
+  --virtual-network $vNet1Id \
+  --zone-name $aksPrivateDnsZone \
+  --registration-enabled false
