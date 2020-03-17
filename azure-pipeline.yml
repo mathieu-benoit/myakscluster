@@ -28,10 +28,11 @@ stages:
         randomSuffix=$(shuf -i 1000-9999 -n 1)
         echo "##vso[task.setvariable variable=aksName]$(aksPrefix)$randomSuffix"
       displayName: 'setup aks name'
-    - task: HelmInstaller@1
-      displayName: 'install helm'
+    - task: DownloadSecureFile@1
+      name: id_rsa_pub
+      displayName: 'download ssh key for jumpbox'
       inputs:
-        helmVersionToInstall: $(helmVersion)
+        secureFile: 'id_rsa.pub'
     - task: Bash@3
       displayName: 'create rg and aks'
       inputs:
@@ -50,6 +51,7 @@ stages:
           RG: $(aksName)
           ZONES: $(zones)
           KURED_WEB_HOOK_URL: $(kuredWebHookUrl)
+          JUMPBOX_SSH_KEY: $(id_rsa_pub.secureFilePath)
     - bash: |
         echo $(jq -n --arg aksName "$(aksName)" '{aksName: $aksName}') > $(build.artifactStagingDirectory)/variables.json
       failOnStderr: true
