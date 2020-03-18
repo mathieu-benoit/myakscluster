@@ -23,7 +23,7 @@ aksServicePrincipal=$SP_ID
       
 # Create Resource Group and Lock
 az group create -n $RG -l $LOCATION
-az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
+#az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
       
 # Create VNET and Subnets
 vnetPrefix='192.168.0.0/21' #2048 ips
@@ -75,12 +75,14 @@ jumpBox=${AKS}jb
 az group create \
   -n $jumpBox \
   -l $LOCATION
-az network vnet create \
+jumpBoxVnetId=$(az network vnet create \
   -n $jumpBox \
   -g $jumpBox \
   --address-prefixes 10.1.0.0/27 \
   --subnet-name $jumpBox \
-  --subnet-prefix 10.1.0.0/27
+  --subnet-prefix 10.1.0.0/27 \
+  --query id \
+  -o tsv)
 echo JUMPBOX: $JUMPBOX_SSH_KEY
 az vm create \
   -n $jumpBox \
@@ -91,29 +93,21 @@ az vm create \
   --custom-data cloud-init.txt \
   --ssh-key-values $JUMPBOX_SSH_KEY
 az network nsg rule update \
-  --name default-allow-ssh \
+  -n default-allow-ssh \
   --nsg-name ${jumpBox}NSG \
   -g $jumpBox \
   --access Deny
-vNet1Id=$(az network vnet show \
-  --resource-group $name \
-  --name $name \
-  --query id --out tsv)
-vNet2Id=$(az network vnet show \
-  --resource-group $aks \
-  --name $aks \
-  --query id --out tsv)
 az network vnet peering create \
   -n jumpbox-aks \
   -g $name \
   --vnet-name $name \
-  --remote-vnet $vNet2Id \
+  --remote-vnet $aksVnet \
   --allow-vnet-access
 az network vnet peering create \
   -n aks-jumpbox \
   -g $aks \
   --vnet-name $aks \
-  --remote-vnet $vNet1Id \
+  --remote-vnet $jumpBoxVnetId \
   --allow-vnet-access
 #aksNodesResourceGroup=$(az aks show \
 #  -n $aks \
