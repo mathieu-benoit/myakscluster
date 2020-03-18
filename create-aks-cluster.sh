@@ -42,57 +42,58 @@ fi
 
 # Create the AKS cluster
 k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
-az aks create \
-            -l $LOCATION \
-            -n $AKS \
-            -g $RG \
-            -k $k8sVersion \
-            -s $NODE_SIZE \
-            -c $NODE_COUNT \
-            --no-ssh-key \
-            --service-principal $aksServicePrincipal \
-            --client-secret $aksClientSecret \
-            --enable-private-cluster \
-            --vnet-subnet-id $aksSubNetId \
-            --network-plugin azure \
-            --network-policy calico \
-            --load-balancer-sku standard \
-            --vm-set-type VirtualMachineScaleSets \
-            $zones
+#az aks create \
+#            -l $LOCATION \
+#            -n $AKS \
+#            -g $RG \
+#            -k $k8sVersion \
+#            -s $NODE_SIZE \
+#            -c $NODE_COUNT \
+#            --no-ssh-key \
+#            --service-principal $aksServicePrincipal \
+#            --client-secret $aksClientSecret \
+#            --enable-private-cluster \
+#            --vnet-subnet-id $aksSubNetId \
+#            --network-plugin azure \
+#            --network-policy calico \
+#            --load-balancer-sku standard \
+#            --vm-set-type VirtualMachineScaleSets \
+#            $zones
 # Disable K8S dashboard
-az aks disable-addons -a kube-dashboard -n $AKS -g $RG
+#az aks disable-addons -a kube-dashboard -n $AKS -g $RG
 # Azure Monitor for containers
-workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
+#workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
-az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
+#az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
 
 # Azure Container Registry (ACR)
 acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
-az aks update -g $RG -n $AKS --attach-acr $acrId
+#az aks update -g $RG -n $AKS --attach-acr $acrId
 
 # Azure VM Jumpbox
-name=mabenoitjumbox
+jumpBox=${AKS}jb
 az group create \
-  -n $name \
+  -n $jumpBox \
   -l $LOCATION
 az network vnet create \
-  -n $name \
-  -g $name \
+  -n $jumpBox \
+  -g $jumpBox \
   --address-prefixes 10.1.0.0/27 \
-  --subnet-name $name \
+  --subnet-name $jumpBox \
   --subnet-prefix 10.1.0.0/27
+echo JUMPBOX: $JUMPBOX_SSH_KEY
 az vm create \
-  -n $name \
-  -g $name \
+  -n $jumpBox \
+  -g $jumpBox \
   --image UbuntuLTS \
-  --subnet $name \
-  --vnet-name $name \
+  --subnet $jumpBox \
+  --vnet-name $jumpBox \
   --custom-data cloud-init.txt \
-  --ssh-key-values id_rsa.pub
+  --ssh-key-values $JUMPBOX_SSH_KEY
 az network nsg rule update \
   --name default-allow-ssh \
-  --nsg-name ${name}NSG \
-  -g $name \
+  --nsg-name ${jumpBox}NSG \
+  -g $jumpBox \
   --access Deny
 vNet1Id=$(az network vnet show \
   --resource-group $name \
@@ -114,16 +115,16 @@ az network vnet peering create \
   --vnet-name $aks \
   --remote-vnet $vNet1Id \
   --allow-vnet-access
-aksNodesResourceGroup=$(az aks show \
-  -n $aks \
-  -g $aks \
-  --query nodeResourceGroup -o tsv) 
-aksPrivateDnsZone=$(az network private-dns zone list \
-    --resource-group $aksNodesResourceGroup \
-    --query [0].name -o tsv)
-az network private-dns link vnet create \
-  --name $name \
-  --resource-group $aksNodesResourceGroup \
-  --virtual-network $vNet1Id \
-  --zone-name $aksPrivateDnsZone \
-  --registration-enabled false
+#aksNodesResourceGroup=$(az aks show \
+#  -n $aks \
+#  -g $aks \
+#  --query nodeResourceGroup -o tsv) 
+#aksPrivateDnsZone=$(az network private-dns zone list \
+#    --resource-group $aksNodesResourceGroup \
+#    --query [0].name -o tsv)
+#az network private-dns link vnet create \
+#  --name $name \
+#  --resource-group $aksNodesResourceGroup \
+#  --virtual-network $vNet1Id \
+#  --zone-name $aksPrivateDnsZone \
+#  --registration-enabled false
