@@ -88,6 +88,7 @@ jumpBoxVnetId=$(az network vnet create \
   --query id \
   -o tsv)
 echo JUMPBOX: $JUMPBOX_SSH_KEY
+echo $jumpBoxVnetId
 az vm create \
   -n $jumpBox \
   -g $jumpBox \
@@ -96,22 +97,22 @@ az vm create \
   --vnet-name $jumpBox \
   --custom-data cloud-init.txt \
   --ssh-key-values $JUMPBOX_SSH_KEY
-az network nsg rule update \
-  -n default-allow-ssh \
-  --nsg-name ${jumpBox}NSG \
-  -g $jumpBox \
-  --access Deny
+#az network nsg rule update \
+#  -n default-allow-ssh \
+#  --nsg-name ${jumpBox}NSG \
+#  -g $jumpBox \
+#  --access Deny
 az network vnet peering create \
   -n jumpbox-aks \
   -g $jumpBox \
   --vnet-name $jumpBox \
-  --remote-vnet-id $aksVnetId \
+  --remote-vnet $aksVnetId \
   --allow-vnet-access
 az network vnet peering create \
   -n aks-jumpbox \
   -g $AKS \
   --vnet-name $AKS \
-  --remote-vnet-id $jumpBoxVnetId \
+  --remote-vnet $jumpBoxVnetId \
   --allow-vnet-access
 #aksNodesResourceGroup=$(az aks show \
 #  -n $aks \
