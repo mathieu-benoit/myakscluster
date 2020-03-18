@@ -69,7 +69,7 @@ az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-pref
 ##
 # Azure Container Registry (ACR)
 ##
-acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
+#acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
 #az aks update -g $RG -n $AKS --attach-acr $acrId
 
 ##
