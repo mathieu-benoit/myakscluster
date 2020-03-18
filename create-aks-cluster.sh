@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Make sure we have the latest Azure CLI version, for example 2.2.0 is required for Private cluster.
-sudo apt-get update
-sudo apt-get install azure-cli
+#sudo apt-get update
+#sudo apt-get install azure-cli
 
 # First checks before going anywhere:
 if [[ $ZONES = "true" ]]; then
@@ -10,7 +10,13 @@ if [[ $ZONES = "true" ]]; then
       if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
             1>&2 echo "The location you selected doesn't support Availability Zones!"
       fi
-fi 
+fi
+
+# Define Zones value
+zones=""
+if [ $ZONES = "true" ]; then
+      zones="--zones 1 2 3"
+fi
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
 az account set -s $SUBSCRIPTION_ID
@@ -24,8 +30,10 @@ aksServicePrincipal=$SP_ID
 # Create Resource Group and Lock
 az group create -n $RG -l $LOCATION
 #az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
-      
-# Create VNET and Subnets
+
+##
+# Create the AKS cluster
+##
 vnetPrefix='192.168.0.0/21' #2048 ips
 aksSubnetPrefix='192.168.0.0/23' #512 ips
 svcSubnetPrefix='192.168.2.0/24' #256 ips
@@ -33,15 +41,7 @@ aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix
 aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
 az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
-
-# Define Zones value
-zones=""
-if [ $ZONES = "true" ]; then
-      zones="--zones 1 2 3"
-fi
-
-# Create the AKS cluster
-k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
+#k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
 #az aks create \
 #            -l $LOCATION \
 #            -n $AKS \
@@ -66,11 +66,15 @@ k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview=
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
 #az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
 
+##
 # Azure Container Registry (ACR)
+##
 acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
 #az aks update -g $RG -n $AKS --attach-acr $acrId
 
+##
 # Azure VM Jumpbox
+##
 jumpBox=${AKS}jb
 az group create \
   -n $jumpBox \
@@ -99,14 +103,14 @@ az network nsg rule update \
   --access Deny
 az network vnet peering create \
   -n jumpbox-aks \
-  -g $name \
-  --vnet-name $name \
-  --remote-vnet $aksVnet \
+  -g $jumpBox \
+  --vnet-name $jumpBox \
+  --remote-vnet $aksVnetId \
   --allow-vnet-access
 az network vnet peering create \
   -n aks-jumpbox \
-  -g $aks \
-  --vnet-name $aks \
+  -g $AKS \
+  --vnet-name $AKS \
   --remote-vnet $jumpBoxVnetId \
   --allow-vnet-access
 #aksNodesResourceGroup=$(az aks show \
