@@ -105,13 +105,13 @@ az network vnet peering create \
   -n jumpbox-aks \
   -g $jumpBox \
   --vnet-name $jumpBox \
-  --remote-vnet $aksVnetId \
+  --remote-vnet-id $aksVnetId \
   --allow-vnet-access
 az network vnet peering create \
   -n aks-jumpbox \
   -g $AKS \
   --vnet-name $AKS \
-  --remote-vnet $jumpBoxVnetId \
+  --remote-vnet-id $jumpBoxVnetId \
   --allow-vnet-access
 #aksNodesResourceGroup=$(az aks show \
 #  -n $aks \
