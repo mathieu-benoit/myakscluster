@@ -31,18 +31,43 @@ aksServicePrincipal=$SP_ID
 az group create -n $RG -l $LOCATION
 #az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
 
+# IP addresses ranges
+aksVnetPrefix='192.168.0.0/21' #2048 ips
+aksSubnetPrefix='192.168.0.0/23' #512 ips
+aksSvcSubnetPrefix='192.168.2.0/24' #256 ips
+acrSubnetPrefix='192.168.3.0/27' #32 ips
+jumpboxVnetPrefix='10.1.0.0/27' #32 ips
+jumpboxSubnetPrefix='10.1.0.0/27' #32 ips
+
 ##
 # Create the AKS cluster
 ##
-vnetPrefix='192.168.0.0/21' #2048 ips
-aksSubnetPrefix='192.168.0.0/23' #512 ips
-svcSubnetPrefix='192.168.2.0/24' #256 ips
-az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix
-aksVnetId=$(az network vnet show -g $RG -n $AKS --query id -o tsv)
-aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
-az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
+az network vnet create \
+  -g $RG \
+  -n $AKS \
+  --address-prefixes $aksVnetPrefix
+aksVnetId=$(az network vnet show \
+  -g $RG \
+  -n $AKS \
+  --query id \
+  -o tsv)
+aksSubNetId=$(az network vnet subnet create \
+  -g $RG \
+  -n $AKS-aks \
+  --vnet-name $AKS \
+  --address-prefixes $aksSubnetPrefix \
+  --query id \
+  -o tsv)
+az network vnet subnet create \
+  -g $RG \
+  -n $AKS-svc \
+  --vnet-name $AKS \
+  --address-prefixes $aksSvcSubnetPrefix
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
-#k8sVersion=$(az aks get-versions -l $LOCATION --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" -o tsv)
+#k8sVersion=$(az aks get-versions \
+#  -l $LOCATION \
+#  --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
+#  -o tsv)
 #az aks create \
 #            -l $LOCATION \
 #            -n $AKS \
@@ -70,8 +95,47 @@ az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-pref
 ##
 # Azure Container Registry (ACR)
 ##
-#acrId=$(az acr create -n $AKS -g $RG -l $LOCATION --sku Basic --query id -o tsv)
-#az aks update -g $RG -n $AKS --attach-acr $acrId
+acrSubNetId=$(az network vnet subnet create \
+  -g $RG \
+  -n $AKS-acr \
+  --vnet-name $AKS \
+  --address-prefixes $acrSubnetPrefix \
+  --query id \
+  -o tsv)
+az network vnet subnet update \
+  -n $AKS-acr \
+  --vnet-name $AKS \
+  -g $RG \
+  --disable-private-endpoint-network-policies
+acrPrivateZone="privatelink.azurecr.io"
+az network private-dns zone create \
+  -g $RG \
+  -n $acrPrivateZone
+az network private-dns link vnet create \
+  -g $RG \
+  -z $acrPrivateZone \
+  -n $AKS-acr \
+  -v $AKS \
+  --registration-enabled false
+acrId=$(az acr create \
+  -n $AKS \
+  -g $RG \
+  -l $LOCATION \
+  --sku Premium \
+  --query id \
+  -o tsv)
+az network private-endpoint create \
+  -n myPrivateEndpoint \
+  -g $RG \
+  --vnet-name $AKS \
+  --subnet $subnetName \
+  --private-connection-resource-id $acrId \
+  --group-ids registry \
+  --connection-name myConnection
+#az aks update \
+#  -g $RG \
+#  -n $AKS \
+#  --attach-acr $acrId
 
 ##
 # Azure VM Jumpbox
@@ -83,9 +147,9 @@ az group create \
 az network vnet create \
   -n $jumpBox \
   -g $jumpBox \
-  --address-prefixes 10.1.0.0/27 \
+  --address-prefixes $jumpboxSubnetPrefix \
   --subnet-name $jumpBox \
-  --subnet-prefix 10.1.0.0/27
+  --subnet-prefix $jumpboxSubnetPrefix
 jumpBoxVnetId=$(az network vnet show \
   -n $jumpBox \
   -g $jumpBox \
