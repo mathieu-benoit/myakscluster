@@ -37,7 +37,8 @@ az group create -n $RG -l $LOCATION
 vnetPrefix='192.168.0.0/21' #2048 ips
 aksSubnetPrefix='192.168.0.0/23' #512 ips
 svcSubnetPrefix='192.168.2.0/24' #256 ips
-aksVnetId=$(az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix --query id -o tsv)
+az network vnet create -g $RG -n $AKS --address-prefixes $vnetPrefix
+aksVnetId=$(az network vnet show -g $RG -n $AKS --query id -o tsv)
 aksSubNetId=$(az network vnet subnet create -g $RG -n $AKS-aks --vnet-name $AKS --address-prefixes $aksSubnetPrefix --query id -o tsv)
 az network vnet subnet create -g $RG -n $AKS-svc --vnet-name $AKS --address-prefixes $svcSubnetPrefix
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
@@ -79,12 +80,15 @@ jumpBox=${AKS}jb
 az group create \
   -n $jumpBox \
   -l $LOCATION
-jumpBoxVnetId=$(az network vnet create \
+az network vnet create \
   -n $jumpBox \
   -g $jumpBox \
   --address-prefixes 10.1.0.0/27 \
   --subnet-name $jumpBox \
-  --subnet-prefix 10.1.0.0/27 \
+  --subnet-prefix 10.1.0.0/27
+jumpBoxVnetId=$(az network vnet show \
+  -n $jumpBox \
+  -g $jumpBox \
   --query id \
   -o tsv)
 echo JUMPBOX: $JUMPBOX_SSH_KEY
