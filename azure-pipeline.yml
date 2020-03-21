@@ -67,11 +67,11 @@ stages:
     steps:
     - download: current
       artifact: variables
-    - bash: |
-        aksName=$(jq .aksName $(pipeline.workspace)/variables/variables.json -r)
-        echo "##vso[task.setvariable variable=aksName]$aksName"
-      failOnStderr: true
-      displayName: 'get variables from previous stage'
+    #- bash: |
+    #    aksName=$(jq .aksName $(pipeline.workspace)/variables/variables.json -r)
+    #    echo "##vso[task.setvariable variable=aksName]$aksName"
+    #  failOnStderr: true
+    #  displayName: 'get variables from previous stage'
     - task: AzureKeyVault@1
       displayName: 'Get secrets from Key Vault'
       inputs:
@@ -97,6 +97,7 @@ stages:
           AKS: $(aksName)
           RG: $(aksName)
           JUMPBOX_SSH_KEY: $(id_rsa.secureFilePath)
+          JUMPBOX_IP_ADDRESS: $(jumpBoxIpAddress)
 - stage: AzureTests
   displayName: AzureTests
   jobs:
