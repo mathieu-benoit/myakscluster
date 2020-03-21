@@ -14,7 +14,7 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
 - [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 
-[![Architecture diagram](./myakscluster.png)
+![Architecture diagram](./myakscluster.png)
 
 # Setup
 
