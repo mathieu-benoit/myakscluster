@@ -18,7 +18,7 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [ ] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
 - [ ] (Beta) Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
 
-TODO - img
+[![Architecture diagram](./myakscluster.svg)
 
 # Setup
 
