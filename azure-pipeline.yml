@@ -65,8 +65,8 @@ stages:
     pool:
       vmImage: $(vmImage)
     steps:
-    - download: current
-      artifact: variables
+    #- download: current
+    #  artifact: variables
     #- bash: |
     #    aksName=$(jq .aksName $(pipeline.workspace)/variables/variables.json -r)
     #    echo "##vso[task.setvariable variable=aksName]$aksName"
