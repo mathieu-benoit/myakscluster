@@ -5,11 +5,22 @@
 #sudo apt-get install azure-cli
 
 # First checks before going anywhere:
+# Zones check
 if [[ $ZONES = "true" ]]; then
       azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
       if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
             1>&2 echo "The location you selected doesn't support Availability Zones!"
       fi
+fi
+# VM quota check
+vmFamily=$(az vm list-skus -l canadacentral --size Standard_DS2_v2 --query [0].family -o tsv)
+az vm list-usage --location canadacentral --query "[?name.value=='$vmFamily']"
+quotaCurrentValue=$(az vm list-usage --location canadacentral --query "[?name.value=='$vmFamily'] | [0].currentValue" -o tsv)
+quotaLimit=$(az vm list-usage --location canadacentral --query "[?name.value=='$vmFamily'] | [0].limit" -o tsv)
+expr $quotaLimit - $quotaCurrentValue
+if [[ $quotaRemaining = 0 ]]; 
+then 
+	1>&2 echo "You don't have enough quota remaining to provision your AKS cluster based on the VM family selected!" 
 fi
 
 # Define Zones value
