@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ssh -i $JUMPBOX_SSH_KEY vsts@JUMPBOX_IP_ADDRESS
+ssh -i $JUMPBOX_SSH_KEY vsts@$JUMPBOX_IP_ADDRESS
 
 ls -la
 
