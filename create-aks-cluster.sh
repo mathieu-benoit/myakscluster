@@ -124,6 +124,10 @@ acrId=$(az acr create \
   --sku Premium \
   --query id \
   -o tsv)
+az aks update \
+  -g $RG \
+  -n $AKS \
+  --attach-acr $acrId
 az network private-endpoint create \
   -n myPrivateEndpoint \
   -g $RG \
@@ -132,10 +136,38 @@ az network private-endpoint create \
   --private-connection-resource-id $acrId \
   --group-ids registry \
   --connection-name myConnection
-#az aks update \
-#  -g $RG \
-#  -n $AKS \
-#  --attach-acr $acrId
+networkInterfaceID=$(az network private-endpoint show \
+  --name myPrivateEndpoint \
+  --resource-group $resourceGroup \
+  --query 'networkInterfaces[0].id' \
+  --output tsv)
+privateIP=$(az resource show \
+  --ids $networkInterfaceID \
+  --api-version 2019-04-01 --query 'properties.ipConfigurations[1].properties.privateIPAddress' \
+  --output tsv)
+dataEndpointPrivateIP=$(az resource show \
+  --ids $networkInterfaceID \
+  --api-version 2019-04-01 \
+  --query 'properties.ipConfigurations[0].properties.privateIPAddress' \
+  --output tsv)
+az network private-dns record-set a create \
+  --name $registryName \
+  --zone-name privatelink.azurecr.io \
+  --resource-group $resourceGroup
+az network private-dns record-set a create \
+  --name ${registryName}.${registryLocation}.data \
+  --zone-name privatelink.azurecr.io \
+  --resource-group $resourceGroup
+az network private-dns record-set a add-record \
+  --record-set-name $registryName \
+  --zone-name privatelink.azurecr.io \
+  --resource-group $resourceGroup \
+  --ipv4-address $privateIP
+az network private-dns record-set a add-record \
+  --record-set-name ${registryName}.${registryLocation}.data \
+  --zone-name privatelink.azurecr.io \
+  --resource-group $resourceGroup \
+  --ipv4-address $dataEndpointPrivateIP
 
 ##
 # Azure VM Jumpbox
