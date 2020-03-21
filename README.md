@@ -9,14 +9,10 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [X] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 - [X] kured [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
 - [X] Disable K8S Dashboard [#24](https://github.com/mathieu-benoit/myakscluster/issues/24)
+- [X] Private AKS cluster + Private ACR + Jumpbox [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
+- [X] Network Policy with Calico [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
-- [X] Network Policy [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
-- [X] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
-- [ ] (Preview) Pod Security Policy [#20](https://github.com/mathieu-benoit/myakscluster/issues/20)
-- [ ] (Preview) IP whitelisting for Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
-- [ ] (Preview) Azure Policy [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
-- [ ] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
-- [ ] (Beta) Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
+- [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 
 [![Architecture diagram](./myakscluster.png)
 
