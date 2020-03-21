@@ -13,6 +13,7 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [X] Network Policy with Calico [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
 - [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
+- [ ] Azure Policy for AKS [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
 
 ![Architecture diagram](./myakscluster.png)
 
