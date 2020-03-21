@@ -58,46 +58,6 @@ stages:
       displayName: 'write variables for the next stage'
     - publish: $(build.artifactStagingDirectory)
       artifact: variables
-- stage: PostAKSClusterCreation
-  displayName: PostAKSClusterCreation
-  jobs:
-  - job: PostAKSClusterCreation
-    pool:
-      vmImage: $(vmImage)
-    steps:
-    #- download: current
-    #  artifact: variables
-    #- bash: |
-    #    aksName=$(jq .aksName $(pipeline.workspace)/variables/variables.json -r)
-    #    echo "##vso[task.setvariable variable=aksName]$aksName"
-    #  failOnStderr: true
-    #  displayName: 'get variables from previous stage'
-    - task: AzureKeyVault@1
-      displayName: 'Get secrets from Key Vault'
-      inputs:
-        azureSubscription: keyvault
-        KeyVaultName: $(kv)
-        SecretsFilter: 'subscriptionId,spId,spSecret,spTenantId'
-    - task: DownloadSecureFile@1
-      name: id_rsa
-      displayName: 'download ssh key for jumpbox'
-      inputs:
-        secureFile: 'id_rsa'
-    - task: Bash@3
-      displayName: 'run post aks cluster creation scripts'
-      inputs:
-        targetType: filePath
-        filePath: './post-create-aks-cluster.sh'
-        failOnStderr: true
-      env:
-          SUBSCRIPTION_ID: $(subscriptionId)
-          SP_ID: $(spId)
-          SP_SECRET: $(spSecret)
-          SP_TENANT_ID: $(spTenantId)
-          AKS: $(aksName)
-          RG: $(aksName)
-          JUMPBOX_SSH_KEY: $(id_rsa.secureFilePath)
-          JUMPBOX_IP_ADDRESS: $(jumpBoxIpAddress)
 - stage: AzureTests
   displayName: AzureTests
   jobs:
