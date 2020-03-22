@@ -207,7 +207,7 @@ az vm create \
   --image UbuntuLTS \
   --subnet $jumpBox \
   --vnet-name $jumpBox \
-  --custom-data cloud-init.txt \
+  --custom-data cloud-init.sh \
   --ssh-key-values $JUMPBOX_SSH_KEY
 #az network nsg rule update \
 #  -n default-allow-ssh \
