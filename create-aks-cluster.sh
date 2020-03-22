@@ -139,46 +139,47 @@ az aks update \
   -g $RG \
   -n $AKS \
   --attach-acr $acrId
+privateEndpointName=$AKS-acr
 az network private-endpoint create \
-  -n myPrivateEndpoint \
+  -n $privateEndpointName \
   -g $RG \
   --vnet-name $AKS \
-  --subnet $subnetName \
+  --subnet $AKS-acr \
   --private-connection-resource-id $acrId \
-  --group-ids registry \
-  --connection-name myConnection
-networkInterfaceID=$(az network private-endpoint show \
-  --name myPrivateEndpoint \
-  --resource-group $resourceGroup \
+  --group-id registry \
+  --connection-name $privateEndpointName
+networkInterfaceId=$(az network private-endpoint show \
+  -n $privateEndpointName \
+  -g $RG \
   --query 'networkInterfaces[0].id' \
   --output tsv)
-privateIP=$(az resource show \
-  --ids $networkInterfaceID \
+privateIp=$(az resource show \
+  --ids $networkInterfaceId \
   --api-version 2019-04-01 --query 'properties.ipConfigurations[1].properties.privateIPAddress' \
   --output tsv)
-dataEndpointPrivateIP=$(az resource show \
-  --ids $networkInterfaceID \
+dataEndpointPrivateIp=$(az resource show \
+  --ids $networkInterfaceId \
   --api-version 2019-04-01 \
   --query 'properties.ipConfigurations[0].properties.privateIPAddress' \
   --output tsv)
 az network private-dns record-set a create \
-  --name $registryName \
-  --zone-name privatelink.azurecr.io \
-  --resource-group $resourceGroup
+  -n $AKS \
+  -z $acrPrivateZone \
+  -g $RG
 az network private-dns record-set a create \
-  --name ${registryName}.${registryLocation}.data \
-  --zone-name privatelink.azurecr.io \
-  --resource-group $resourceGroup
+  -n ${AKS}.${LOCATION}.data \
+  -z $acrPrivateZone \
+  -g $RG
 az network private-dns record-set a add-record \
-  --record-set-name $registryName \
-  --zone-name privatelink.azurecr.io \
-  --resource-group $resourceGroup \
-  --ipv4-address $privateIP
+  -n $AKS \
+  -z $acrPrivateZone \
+  -g $RG \
+  -a $privateIp
 az network private-dns record-set a add-record \
-  --record-set-name ${registryName}.${registryLocation}.data \
-  --zone-name privatelink.azurecr.io \
-  --resource-group $resourceGroup \
-  --ipv4-address $dataEndpointPrivateIP
+  -n ${AKS}.${LOCATION}.data \
+  -z $acrPrivateZone \
+  -g $RG \
+  -a $dataEndpointPrivateIp
 
 ##
 # Azure VM Jumpbox
