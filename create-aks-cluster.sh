@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Make sure we have the latest Azure CLI version, for example 2.2.0 is required for Private cluster.
-#sudo apt-get update
-#sudo apt-get install azure-cli
+sudo apt-get update
+sudo apt-get install azure-cli
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
 az account set -s $SUBSCRIPTION_ID
@@ -40,7 +40,7 @@ aksServicePrincipal=$SP_ID
       
 # Create Resource Group and Lock
 az group create -n $RG -l $LOCATION
-#az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
+az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
 
 # IP addresses ranges
 aksVnetPrefix='192.168.0.0/21' #2048 ips
@@ -75,33 +75,33 @@ az network vnet subnet create \
   --vnet-name $AKS \
   --address-prefixes $aksSvcSubnetPrefix
 #az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
-#k8sVersion=$(az aks get-versions \
-#  -l $LOCATION \
-#  --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
-#  -o tsv)
-#az aks create \
-#            -l $LOCATION \
-#            -n $AKS \
-#            -g $RG \
-#            -k $k8sVersion \
-#            -s $NODE_SIZE \
-#            -c $NODE_COUNT \
-#            --no-ssh-key \
-#            --service-principal $aksServicePrincipal \
-#            --client-secret $aksClientSecret \
-#            --enable-private-cluster \
-#            --vnet-subnet-id $aksSubNetId \
-#            --network-plugin azure \
-#            --network-policy calico \
-#            --load-balancer-sku standard \
-#            --vm-set-type VirtualMachineScaleSets \
-#            $zones
+k8sVersion=$(az aks get-versions \
+  -l $LOCATION \
+  --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
+  -o tsv)
+az aks create \
+  -l $LOCATION \
+  -n $AKS \
+  -g $RG \
+  -k $k8sVersion \
+  -s $NODE_SIZE \
+  -c $NODE_COUNT \
+  --no-ssh-key \
+  --service-principal $aksServicePrincipal \
+  --client-secret $aksClientSecret \
+  --enable-private-cluster \
+  --vnet-subnet-id $aksSubNetId \
+  --network-plugin azure \
+  --network-policy calico \
+  --load-balancer-sku standard \
+  --vm-set-type VirtualMachineScaleSets \
+  $zones
 # Disable K8S dashboard
-#az aks disable-addons -a kube-dashboard -n $AKS -g $RG
+az aks disable-addons -a kube-dashboard -n $AKS -g $RG
 # Azure Monitor for containers
-#workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
+workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
 #az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
-#az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
+az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
 
 ##
 # Azure Container Registry (ACR)
@@ -207,11 +207,11 @@ az vm create \
   --vnet-name $jumpBox \
   --custom-data cloud-init.sh \
   --ssh-key-values $JUMPBOX_SSH_KEY
-#az network nsg rule update \
-#  -n default-allow-ssh \
-#  --nsg-name ${jumpBox}NSG \
-#  -g $jumpBox \
-#  --access Deny
+az network nsg rule update \
+  -n default-allow-ssh \
+  --nsg-name ${jumpBox}NSG \
+  -g $jumpBox \
+  --access Deny
 az network vnet peering create \
   -n jumpbox-aks \
   -g $jumpBox \
@@ -224,16 +224,16 @@ az network vnet peering create \
   --vnet-name $AKS \
   --remote-vnet $jumpBoxVnetId \
   --allow-vnet-access
-#aksNodesResourceGroup=$(az aks show \
-#  -n $aks \
-#  -g $aks \
-#  --query nodeResourceGroup -o tsv) 
-#aksPrivateDnsZone=$(az network private-dns zone list \
-#    --resource-group $aksNodesResourceGroup \
-#    --query [0].name -o tsv)
-#az network private-dns link vnet create \
-#  --name $name \
-#  --resource-group $aksNodesResourceGroup \
-#  --virtual-network $vNet1Id \
-#  --zone-name $aksPrivateDnsZone \
-#  --registration-enabled false
+aksNodesResourceGroup=$(az aks show \
+  -n $aks \
+  -g $aks \
+  --query nodeResourceGroup -o tsv) 
+aksPrivateDnsZone=$(az network private-dns zone list \
+    --resource-group $aksNodesResourceGroup \
+    --query [0].name -o tsv)
+az network private-dns link vnet create \
+  --name $name \
+  --resource-group $aksNodesResourceGroup \
+  --virtual-network $vNet1Id \
+  --zone-name $aksPrivateDnsZone \
+  --registration-enabled false
