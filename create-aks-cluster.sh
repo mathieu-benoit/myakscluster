@@ -4,6 +4,9 @@
 #sudo apt-get update
 #sudo apt-get install azure-cli
 
+az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
+az account set -s $SUBSCRIPTION_ID
+
 # First checks before going anywhere:
 # Zones check
 if [[ $ZONES = "true" ]]; then
@@ -28,9 +31,6 @@ zones=""
 if [ $ZONES = "true" ]; then
       zones="--zones 1 2 3"
 fi
-
-az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
-az account set -s $SUBSCRIPTION_ID
       
 # Manage SP and Roles
 #aksClientSecret=$(az ad sp create-for-rbac -n $AKS --skip-assignment --query password -o tsv)
@@ -199,8 +199,6 @@ jumpBoxVnetId=$(az network vnet show \
   -g $jumpBox \
   --query id \
   -o tsv)
-echo JUMPBOX: $JUMPBOX_SSH_KEY
-echo $jumpBoxVnetId
 az vm create \
   -n $jumpBox \
   -g $jumpBox \
