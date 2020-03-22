@@ -15,6 +15,11 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 - [ ] Azure Policy for AKS [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
 
+Complementary Azure services to leverage:
+- Azure Advisor for AKS
+- Azure Security Center for ACR
+- Azure Security Center for AKS
+
 ![Architecture diagram](./myakscluster.png)
 
 # Setup
