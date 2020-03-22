@@ -202,6 +202,7 @@ jumpBoxVnetId=$(az network vnet show \
 az vm create \
   -n $jumpBox \
   -g $jumpBox \
+  -l $LOCATION
   --image UbuntuLTS \
   --subnet $jumpBox \
   --vnet-name $jumpBox \
@@ -220,20 +221,20 @@ az network vnet peering create \
   --allow-vnet-access
 az network vnet peering create \
   -n aks-jumpbox \
-  -g $AKS \
+  -g $RG \
   --vnet-name $AKS \
   --remote-vnet $jumpBoxVnetId \
   --allow-vnet-access
 aksNodesResourceGroup=$(az aks show \
-  -n $aks \
-  -g $aks \
-  --query nodeResourceGroup -o tsv) 
+  -n $AKS \
+  -g $RG \
+  --query nodeResourceGroup -o tsv)
 aksPrivateDnsZone=$(az network private-dns zone list \
-    --resource-group $aksNodesResourceGroup \
+    -g $aksNodesResourceGroup \
     --query [0].name -o tsv)
 az network private-dns link vnet create \
-  --name $name \
-  --resource-group $aksNodesResourceGroup \
-  --virtual-network $vNet1Id \
-  --zone-name $aksPrivateDnsZone \
-  --registration-enabled false
+  -n $AKS \
+  -g $aksNodesResourceGroup \
+  -v $aksVnetId \
+  -z $aksPrivateDnsZone \
+  -e false
