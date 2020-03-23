@@ -233,8 +233,8 @@ aksPrivateDnsZone=$(az network private-dns zone list \
     -g $aksNodesResourceGroup \
     --query [0].name -o tsv)
 az network private-dns link vnet create \
-  -n $AKS \
+  -n $jumpBox \
   -g $aksNodesResourceGroup \
-  -v $aksVnetId \
+  -v $jumpBoxVnetId \
   -z $aksPrivateDnsZone \
   -e false
