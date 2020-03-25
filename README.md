@@ -9,16 +9,18 @@ To properly setup and secure your AKS cluster, there is a couple of features and
 - [X] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 - [X] kured [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
 - [X] Disable K8S Dashboard [#24](https://github.com/mathieu-benoit/myakscluster/issues/24)
+- [X] Private AKS cluster + Private ACR + Jumpbox [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
+- [X] Network Policy with Calico [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
-- [X] Network Policy [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
-- [X] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
-- [ ] (Preview) Pod Security Policy [#20](https://github.com/mathieu-benoit/myakscluster/issues/20)
-- [ ] (Preview) IP whitelisting for Kubernetes API [#12](https://github.com/mathieu-benoit/myakscluster/issues/12)
-- [ ] (Preview) Azure Policy [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
-- [ ] (Beta) Azure KeyVault Flex Volume [#18](https://github.com/mathieu-benoit/myakscluster/issues/18)
-- [ ] (Beta) Pod Identity [#17](https://github.com/mathieu-benoit/myakscluster/issues/17)
+- [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
+- [ ] Azure Policy for AKS [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
 
-TODO - img
+Complementary Azure services to leverage:
+- Azure Advisor for AKS
+- Azure Security Center for ACR
+- Azure Security Center for AKS
+
+![Architecture diagram](./myakscluster.png)
 
 # Setup
 
@@ -54,6 +56,93 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
                                   [--detect {false, true}]
                                   [--org]
                                   [--project]
+```
+
+# Setup once the AKS cluster is provisioned
+
+```
+#Install kured
+kuredVersion=1.3.0
+KURED_WEB_HOOK_URL=TO_REPLACE
+kubectl create ns kured
+helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+helm repo update
+helm install kured stable/kured \
+            -n kured \
+            --set image.tag=$kuredVersion \
+            --set nodeSelector."beta\.kubernetes\.io/os"=linux \
+            --set extraArgs.start-time=9am \
+            --set extraArgs.end-time=5pm \
+            --set extraArgs.time-zone=America/Toronto \
+            --set extraArgs.reboot-days="mon\,tue\,wed\,thu\,fri" \
+            --set tolerations[0].effect=NoSchedule \
+            --set tolerations[0].key=node-role.kubernetes.io/master \
+            --set tolerations[1].operator=Exists \
+            --set tolerations[1].key=CriticalAddonsOnly \
+            --set tolerations[2].operator=Exists \
+            --set tolerations[2].effect=NoExecute \
+            --set tolerations[3].operator=Exists \
+            --set tolerations[3].effect=NoSchedule \
+            --set extraArgs.slack-hook-url=$KURED_WEB_HOOK_URL
+
+# Install Azure Pipelines agent
+AZP_TOKEN=REPLACE_ME
+AZP_URL=https://dev.azure.com/REPLACE_ME
+AZP_AGENT_NAME=REPLACE_ME
+AZP_POOL=$AZP_AGENT_NAME
+
+kubectl create secret generic azp \
+  --from-literal=AZP_URL=$AZP_URL \
+  --from-literal=AZP_TOKEN=$AZP_TOKEN \
+  --from-literal=AZP_AGENT_NAME=$AZP_AGENT_NAME \
+  --from-literal=AZP_POOL=$AZP_POOL
+kubectl apply -f - <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ado-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ado-agent
+  template:
+    metadata:
+      labels:
+        app: ado-agent
+    spec:
+      containers:
+        - name: ado-agent
+          image: mabenoit/ado-agent:latest
+          env:
+            - name: AZP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_URL
+            - name: AZP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_TOKEN
+            - name: AZP_AGENT_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_AGENT_NAME
+            - name: AZP_POOL
+              valueFrom:
+                secretKeyRef:
+                  name: azp
+                  key: AZP_POOL
+          volumeMounts:
+            - mountPath: /var/run/docker.sock
+              name: docker-socket-volume
+      volumes:
+        - name: docker-socket-volume
+          hostPath:
+            path: /var/run/docker.sock
+EOF
 ```
 
 # Pricing estimation
