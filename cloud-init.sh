@@ -21,4 +21,4 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 sudo apt-get update
 sudo apt-get install -y kubectl
-echo "alias k=kubectl" | sudo tee ~/.bash_aliases
+echo "alias k=kubectl" | sudo tee /home/vsts/.bash_aliases
