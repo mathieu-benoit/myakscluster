@@ -16,10 +16,10 @@ if [[ $ZONES = "true" ]]; then
       fi
 fi
 # VM quota check
-vmFamily=$(az vm list-skus -l canadacentral --size Standard_DS2_v2 --query [0].family -o tsv)
-az vm list-usage --location canadacentral --query "[?name.value=='$vmFamily']"
-quotaCurrentValue=$(az vm list-usage --location canadacentral --query "[?name.value=='$vmFamily'] | [0].currentValue" -o tsv)
-quotaLimit=$(az vm list-usage --location canadacentral --query "[?name.value=='$vmFamily'] | [0].limit" -o tsv)
+vmFamily=$(az vm list-skus -l $LOCATION -s $NODE_SIZE --query [0].family -o tsv)
+az vm list-usage -l $LOCATION --query "[?name.value=='$vmFamily']"
+quotaCurrentValue=$(az vm list-usage -l $LOCATION --query "[?name.value=='$vmFamily'] | [0].currentValue" -o tsv)
+quotaLimit=$(az vm list-usage -l $LOCATION --query "[?name.value=='$vmFamily'] | [0].limit" -o tsv)
 expr $quotaLimit - $quotaCurrentValue
 if [[ $quotaRemaining = 0 ]]; 
 then 
