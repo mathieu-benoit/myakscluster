@@ -135,6 +135,10 @@ acrId=$(az acr create \
   --sku Premium \
   --query id \
   -o tsv)
+az acr update \
+  -n $AKS \
+  -g $RG \
+  --default-action Deny
 az aks update \
   -g $RG \
   -n $AKS \
