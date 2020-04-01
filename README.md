@@ -61,6 +61,9 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 # Setup once the AKS cluster is provisioned
 
 ```
+#Apply configs for Azure Monitor for Containers
+kubectl apply -f container-azm-ms-agentconfig.yaml
+
 #Install kured
 kuredVersion=1.3.0
 KURED_WEB_HOOK_URL=TO_REPLACE
