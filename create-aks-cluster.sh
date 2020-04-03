@@ -197,7 +197,7 @@ jumpBoxVnetId=$(az network vnet show \
 az vm create \
   -n $jumpBox \
   -g $jumpBox \
-  -l $LOCATION
+  -l $LOCATION \
   --image UbuntuLTS \
   --subnet $jumpBox \
   --vnet-name $jumpBox \
