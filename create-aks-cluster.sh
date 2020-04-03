@@ -87,8 +87,7 @@ az aks create \
   -s $NODE_SIZE \
   -c $NODE_COUNT \
   --no-ssh-key \
-  --service-principal $aksServicePrincipal \
-  --client-secret $aksClientSecret \
+  --enable-managed-identity \
   --enable-private-cluster \
   --vnet-subnet-id $aksSubNetId \
   --network-plugin azure \
