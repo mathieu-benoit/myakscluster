@@ -32,12 +32,6 @@ if [ $ZONES = "true" ]; then
       zones="--zones 1 2 3"
 fi
       
-# Manage SP and Roles
-#aksClientSecret=$(az ad sp create-for-rbac -n $AKS --skip-assignment --query password -o tsv)
-aksClientSecret=$SP_SECRET
-#aksServicePrincipal=$(az ad sp show --id http://$AKS --query appId -o tsv)
-aksServicePrincipal=$SP_ID
-      
 # Create Resource Group and Lock
 az group create -n $RG -l $LOCATION
 az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
@@ -74,7 +68,6 @@ az network vnet subnet create \
   -n $AKS-svc \
   --vnet-name $AKS \
   --address-prefixes $aksSvcSubnetPrefix
-#az role assignment create --assignee $aksServicePrincipal --role "Network Contributor" --scope $aksVnetId
 k8sVersion=$(az aks get-versions \
   -l $LOCATION \
   --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
@@ -99,7 +92,6 @@ az aks create \
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
 # Azure Monitor for containers
 workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
-#az role assignment create --assignee $aksServicePrincipal --role Contributor --scope $workspaceResourceId
 az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
 
 ##
