@@ -169,6 +169,8 @@ EOF
 - [Bandwidth](https://azure.microsoft.com/pricing/details/bandwidth/) (related to Availability Zones)
   - Estimation: TODO
   - Note: you may want to leverage PodAffinity to avoid cross-zones communications with Pods too chatty
+- [Private Endpoint](https://azure.microsoft.com/pricing/details/private-link/)
+  - Estimation: For 2 Private Endpoints (AKS + ACR)
 
 # Other considerations:
 
