@@ -15,8 +15,9 @@ Basic - without cost:
 - [X] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 
 Advanced - with cost:
-- [X] Private AKS cluster + Private ACR + Jumpbox [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
-- [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
+- [X] Private AKS cluster + Private ACR + Jumpbox with Azure Private Endpoint [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
+  - Alternatively: Use [Authorized IP addresses with AKS](https://docs.microsoft.com/azure/aks/api-server-authorized-ip-ranges) and [Azure Service Endpoint with ACR](https://docs.microsoft.com/azure/container-registry/container-registry-vnet).
+- [ ] Limit Egress Traffic with Azure Firewall [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 
 Complementary Azure services to leverage:
 - Azure Advisor for AKS
