@@ -2,18 +2,21 @@
 
 # myakscluster
 
-To properly setup and secure your AKS cluster, there is a couple of features and components to enable in order to respect the Security Principle of Least Privilege, here is the list:
+To properly setup and secure your AKS cluster, there is a couple of features and components to enable in order to properly setup your Security Posture, here is the list:
 
-- [X] Service Principal [#6](https://github.com/mathieu-benoit/myakscluster/issues/6)
+Basic - without cost:
+- [ ] Managed Identity [#62](https://github.com/mathieu-benoit/myakscluster/issues/62)
 - [X] Azure Lock [#21](https://github.com/mathieu-benoit/myakscluster/issues/21)
-- [X] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 - [X] kured [#13](https://github.com/mathieu-benoit/myakscluster/issues/13)
 - [X] Disable K8S Dashboard [#24](https://github.com/mathieu-benoit/myakscluster/issues/24)
-- [X] Private AKS cluster + Private ACR + Jumpbox [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
 - [X] Network Policy with Calico [#9](https://github.com/mathieu-benoit/myakscluster/issues/9)
 - [ ] AAD [#10](https://github.com/mathieu-benoit/myakscluster/issues/10)
-- [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 - [ ] Azure Policy for AKS [#11](https://github.com/mathieu-benoit/myakscluster/issues/11)
+- [X] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
+
+Advanced - with cost:
+- [X] Private AKS cluster + Private ACR + Jumpbox [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
+- [ ] Limit Egress Traffic [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
 
 Complementary Azure services to leverage:
 - Azure Advisor for AKS
