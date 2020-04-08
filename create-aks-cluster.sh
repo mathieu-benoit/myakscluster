@@ -199,6 +199,7 @@ az vm create \
   -g $jumpBox \
   -l $LOCATION \
   --image UbuntuLTS \
+  --size Standard_B2s \
   --subnet $jumpBox \
   --vnet-name $jumpBox \
   --custom-data cloud-init.sh \
