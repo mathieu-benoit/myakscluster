@@ -8,6 +8,7 @@ variables:
   nodeCount: 3
   nodeSize: Standard_DS2_v2
   zones: false
+  skipComponentGovernanceDetection: true
   # define 3 more variables: kv and aksPrefix in the pipeline UI definition
 
 stages:
