@@ -96,13 +96,12 @@ az aks nodepool add \
     -n userlinux \
     --os-type Linux \
     --mode User \
+    --labels kubernetes.azure.com/mode=user \
     -s $NODE_SIZE \
     -c $NODE_COUNT \
     -k $k8sVersion \
     $zones
-#--vnet-subnet-id # still in preview and calico is not supported
-#--node-taints
-#--labels
+    #--vnet-subnet-id # still in preview and calico is not supported
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
 # Azure Monitor for containers
