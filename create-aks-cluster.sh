@@ -80,7 +80,8 @@ az aks create \
   -s $NODE_SIZE \
   -c $NODE_COUNT \
   --no-ssh-key \
-  --enable-managed-identity \
+  --nodepool-name system \
+  #--enable-managed-identity \ current issue there: https://github.com/Azure/azure-cli/issues/12864
   --enable-private-cluster \
   --vnet-subnet-id $aksSubNetId \
   --network-plugin azure \
@@ -88,6 +89,20 @@ az aks create \
   --load-balancer-sku standard \
   --vm-set-type VirtualMachineScaleSets \
   $zones
+# Linux User Nodepool
+az aks nodepool add \
+    -g $RG \
+    --cluster-name $AKS \
+    -n userlinux \
+    --os-type Linux \
+    --mode User \
+    -s $NODE_SIZE \
+    -c $NODE_COUNT \
+    -k $k8sVersion \
+    $zones
+#--vnet-subnet-id # still in preview and calico is not supported
+#--node-taints
+#--labels
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
 # Azure Monitor for containers
