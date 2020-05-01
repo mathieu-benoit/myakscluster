@@ -7,10 +7,11 @@ KURED_WEB_HOOK_URL=TO_REPLACE
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 helm install kured stable/kured \
+            --version 1.5.0
             -n kured \
             --create-namespace \
             --set image.tag=$kuredVersion \
-            --set nodeSelector."beta\.kubernetes\.io/os"=linux \
+            --set nodeSelector."kubernetes\.io/os"=linux \
             --set extraArgs.start-time=9am \
             --set extraArgs.end-time=5pm \
             --set extraArgs.time-zone=America/Toronto \
@@ -54,34 +55,37 @@ spec:
         app: ado-agent
     spec:
       containers:
-        - name: ado-agent
-          image: mabenoit/ado-agent:latest
-          env:
-            - name: AZP_URL
-              valueFrom:
-                secretKeyRef:
-                  name: azp
-                  key: AZP_URL
-            - name: AZP_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: azp
-                  key: AZP_TOKEN
-            - name: AZP_AGENT_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: azp
-                  key: AZP_AGENT_NAME
-            - name: AZP_POOL
-              valueFrom:
-                secretKeyRef:
-                  name: azp
-                  key: AZP_POOL
-          volumeMounts:
-            - mountPath: /var/run/docker.sock
-              name: docker-socket-volume
+      - name: ado-agent
+        image: mabenoit/ado-agent:13072
+        env:
+          - name: AZP_URL
+            valueFrom:
+              secretKeyRef:
+                name: azp
+                key: AZP_URL
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: azp
+                key: AZP_TOKEN
+          - name: AZP_AGENT_NAME
+            valueFrom:
+              secretKeyRef:
+                name: azp
+                key: AZP_AGENT_NAME
+          - name: AZP_POOL
+            valueFrom:
+              secretKeyRef:
+                name: azp
+                key: AZP_POOL
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-socket-volume
       volumes:
         - name: docker-socket-volume
           hostPath:
             path: /var/run/docker.sock
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.azure.com/mode: user
 EOF
