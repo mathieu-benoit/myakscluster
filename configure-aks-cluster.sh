@@ -2,7 +2,7 @@
 kubectl apply -f container-azm-ms-agentconfig.yaml
 
 #Install kured
-kuredVersion=1.3.0
+kuredVersion=1.4.0
 KURED_WEB_HOOK_URL=TO_REPLACE
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
