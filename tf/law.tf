@@ -1,3 +1,4 @@
+# https://www.terraform.io/docs/providers/azurerm/r/log_analytics_workspace.html
 resource "azurerm_log_analytics_workspace" "law" {
   name                = var.aks_name
   location            = var.location

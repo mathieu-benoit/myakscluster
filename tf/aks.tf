@@ -1,18 +1,19 @@
+# https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                    = var.aks_name
-  location                = var.location
-  resource_group_name     = azurerm_resource_group.rg.name
-  dns_prefix              = var.aks_name
-  kubernetes_version      = var.k8s_version
+  name                     = var.aks_name
+  location                 = var.location
+  resource_group_name      = azurerm_resource_group.rg.name
+  dns_prefix               = var.aks_name
+  kubernetes_version       = var.k8s_version
   #private_cluster_enabled = true
 
   default_node_pool {
     name            = "system"
-    node_count      = 3
-    vm_size         = "Standard_DS2_v2"
+    node_count      = var.aks_node_count
+    vm_size         = var.aks_vm_size
     type            = "VirtualMachineScaleSets"
-    os_disk_size_gb = var.os_disk_size_gb
-    vnet_subnet_id  = var.azure_subnet_id
+    vnet_subnet_id  = azurerm_subnet.aks_nodes_subnet.id
+    #os_disk_size_gb = var.os_disk_size_gb
     #node_labels
     #availability_zones
   }
@@ -23,11 +24,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   
   network_profile {
     network_plugin     = "azure"
-    network_policy     = "calico"
+    network_policy     = var.aks_network_policy
     load_balancer_sku  = "standard"
-    service_cidr       = var.service_cidr
-    dns_service_ip     = var.dns_service_ip
-    docker_bridge_cidr = var.docker_bridge_cidr
+    service_cidr       = var.aks_service_cidr
+    dns_service_ip     = var.aks_dns_service_ip
+    docker_bridge_cidr = var.aks_docker_bridge_cidr
+    #FYI: pod_cidr should be defined if kubenet is use.
   }
   
   addon_profile {
@@ -41,12 +43,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "usernodepool" {
-  name                  = "linuxuser"
-  os_type               = "linux"
+resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
+  name                  = "userlinux"
+  os_type               = "Linux"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-  vm_size               = "Standard_DS2_v2"
-  node_count            = 3
+  vm_size               = var.aks_vm_size
+  node_count            = var.aks_node_count
   #node_labels
   #os_disk_size_gb
   #availability_zones
