@@ -37,10 +37,13 @@ az group create -n $RG -l $LOCATION
 az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
 
 # IP addresses ranges
-aksVnetPrefix='192.168.0.0/21' #2048 ips
-aksSubnetPrefix='192.168.0.0/23' #512 ips
-aksSvcSubnetPrefix='192.168.2.0/24' #256 ips
-acrSubnetPrefix='192.168.3.0/27' #32 ips
+dockerBridgeAddress='172.17.0.1/27' #32 ips
+serviceCidr='192.168.0.0/24' #256 ips
+dnsServiceIp='192.168.0.10'
+aksVnetPrefix='100.64.0.0/21' #2048 ips
+aksSubnetPrefix='100.64.0.0/23' #512 ips
+aksSvcSubnetPrefix='100.64.2.0/24' #256 ips
+acrSubnetPrefix='100.64.3.0/27' #32 ips
 jumpboxVnetPrefix='10.1.0.0/27' #32 ips
 jumpboxSubnetPrefix='10.1.0.0/27' #32 ips
 
@@ -88,6 +91,9 @@ az aks create \
   --network-policy calico \
   --load-balancer-sku standard \
   --vm-set-type VirtualMachineScaleSets \
+  --docker-bridge-address $dockerBridgeAddress \
+  --service-cidr $serviceCidr \
+  --dns-service-ip $dnsServiceIp \
   $zones
 # Linux User Nodepool
 az aks nodepool add \
