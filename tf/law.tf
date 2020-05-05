@@ -6,7 +6,7 @@ resource "azurerm_log_analytics_workspace" "law" {
 }
 
 resource "azurerm_log_analytics_solution" "las" {
-  solution_name         = "Containers"
+  solution_name         = "ContainerInsights"
   location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   workspace_resource_id = azurerm_log_analytics_workspace.law.id
@@ -14,6 +14,6 @@ resource "azurerm_log_analytics_solution" "las" {
 
   plan {
     publisher = "Microsoft"
-    product   = "OMSGallery/Containers"
+    product   = "OMSGallery/ContainerInsights"
   }
 }
