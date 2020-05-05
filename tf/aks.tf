@@ -8,13 +8,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
   #private_cluster_enabled = true
 
   default_node_pool {
-    name            = "system"
-    node_count      = var.aks_node_count
-    vm_size         = var.aks_vm_size
-    type            = "VirtualMachineScaleSets"
-    vnet_subnet_id  = azurerm_subnet.aks_nodes_subnet.id
+    name             = "system"
+    node_count       = var.aks_node_count
+    vm_size          = var.aks_vm_size
+    type             = "VirtualMachineScaleSets"
+    vnet_subnet_id   = azurerm_subnet.aks_nodes_subnet.id
     #os_disk_size_gb = var.os_disk_size_gb
-    #node_labels
     #availability_zones
   }
 
@@ -49,8 +48,10 @@ resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
   vm_size               = var.aks_vm_size
   node_count            = var.aks_node_count
-  #node_labels
+  vnet_subnet_id        = azurerm_subnet.aks_nodes_subnet.id #limitation currently with having a different subnet per nodepool, calico netpol not working.
+  node_labels           = {
+      "kubernetes.azure.com/mode" = "user"
+    }
   #os_disk_size_gb
   #availability_zones
-  #vnet_subnet_id
 }
