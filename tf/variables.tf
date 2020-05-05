@@ -28,6 +28,12 @@ variable "aks_nodes_subnet_address_prefix" {
   description = "The AKS Nodes Subnet's IP ranges, /23 represents 512 IPs."
 }
 
+variable "aks_ingress_subnet_address_prefix" {
+  type        = string
+  default     = "100.64.2.0/24"
+  description = "The AKS Ingress/Service Subnet's IP ranges, /24 represents 256 IPs."
+}
+
 variable "aks_docker_bridge_cidr" {
   type        = string
   default     = "172.17.0.1/27"
