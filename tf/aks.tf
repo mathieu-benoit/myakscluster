@@ -1,3 +1,6 @@
+# TODOs:
+# Nodepool Mode: https://github.com/terraform-providers/terraform-provider-azurerm/issues/6058
+
 # https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster.html
 resource "azurerm_kubernetes_cluster" "aks" {
   name                     = var.aks_name
@@ -42,6 +45,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 }
 
+# https://www.terraform.io/docs/providers/azurerm/r/kubernetes_cluster_node_pool.html
 resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
   name                  = "userlinux"
   os_type               = "Linux"
