@@ -69,3 +69,10 @@ variable "aks_node_count" {
   default     = 3
   description = "The number of nodes/VMs per nodepool."
 }
+
+variable "aks_availability_zones" {
+  type        = list(string)
+  default     = []
+  #default     = ["1", "2", "3"]
+  description = "The AZs for the AKS's nodes/VMs."
+}

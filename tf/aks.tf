@@ -11,13 +11,13 @@ resource "azurerm_kubernetes_cluster" "aks" {
   #private_cluster_enabled = true
 
   default_node_pool {
-    name             = "system"
-    node_count       = var.aks_node_count
-    vm_size          = var.aks_vm_size
-    type             = "VirtualMachineScaleSets"
-    vnet_subnet_id   = azurerm_subnet.aks_nodes_subnet.id
-    #os_disk_size_gb = var.os_disk_size_gb
-    #availability_zones
+    name               = "system"
+    node_count         = var.aks_node_count
+    vm_size            = var.aks_vm_size
+    type               = "VirtualMachineScaleSets"
+    vnet_subnet_id     = azurerm_subnet.aks_nodes_subnet.id
+    availability_zones = var.aks_availability_zones
+    #os_disk_size_gb   = var.os_disk_size_gb
   }
 
   identity {
@@ -56,6 +56,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
   node_labels           = {
       "kubernetes.azure.com/mode" = "user"
     }
+  availability_zones = var.aks_availability_zones
   #os_disk_size_gb
-  #availability_zones
 }

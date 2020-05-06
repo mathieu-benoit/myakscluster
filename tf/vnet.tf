@@ -20,3 +20,9 @@ resource "azurerm_subnet" "aks_ingress_subnet" {
   virtual_network_name = azurerm_virtual_network.vnet.name
   address_prefixes     = [var.aks_ingress_subnet_address_prefix]
 }
+
+#resource "azurerm_role_assignment" "aks_subnet" {
+#  scope                = var.vnet_subnet_id
+#  role_definition_name = "Network Contributor"
+#  principal_id         = azuread_service_principal.aks.id
+#}
