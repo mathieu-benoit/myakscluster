@@ -2,6 +2,7 @@
 
 # Make sure we have the latest Azure CLI version, for example 2.2.0 is required for Private cluster.
 sudo apt-get update
+sudo apt-get autoremove
 sudo apt-get install azure-cli
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
