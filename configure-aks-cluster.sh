@@ -7,7 +7,7 @@ KURED_WEB_HOOK_URL=TO_REPLACE
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 helm install kured stable/kured \
-            --version 1.5.0
+            --version 1.5.0 \
             -n kured \
             --create-namespace \
             --set image.tag=$kuredVersion \
