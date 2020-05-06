@@ -91,8 +91,6 @@ spec:
 EOF
 
 # Install cert-manager
-certManagerVersion=v0.14.3
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/$certManagerVersion/cert-manager.crds.yaml
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
 helm upgrade \
@@ -101,4 +99,5 @@ helm upgrade \
     --install \
     -n cert-manager \
     --create-namespace \
-    --version $certManagerVersion
+    --version v0.15.0 \
+    --set installCRDs=true
