@@ -34,7 +34,7 @@ AZP_POOL=$AZP_AGENT_NAME
 
 kubectl create ns ado-agent
 kubectl create secret generic azp \
-  -n ado-agent
+  -n ado-agent \
   --from-literal=AZP_URL=$AZP_URL \
   --from-literal=AZP_TOKEN=$AZP_TOKEN \
   --from-literal=AZP_AGENT_NAME=$AZP_AGENT_NAME \
