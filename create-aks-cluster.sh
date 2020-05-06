@@ -85,7 +85,7 @@ az aks create \
   --nodepool-name system \
   --no-ssh-key \
   --enable-managed-identity \
-  --skip-subnet-role-assignment \ # workaround for issue with MI: https://github.com/Azure/azure-cli/issues/12864
+  --skip-subnet-role-assignment \
   --enable-private-cluster \
   --vnet-subnet-id $aksSubNetId \
   --network-plugin azure \
