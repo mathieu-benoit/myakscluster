@@ -83,6 +83,7 @@ az aks create \
   -k $k8sVersion \
   -s $NODE_SIZE \
   -c $NODE_COUNT \
+  --dns-name-prefix $AKS \
   --nodepool-name system \
   --no-ssh-key \
   --enable-managed-identity \
