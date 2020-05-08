@@ -7,7 +7,7 @@ KURED_WEB_HOOK_URL=TO_REPLACE
 helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 helm repo update
 helm install kured stable/kured \
-            --version 1.5.0
+            --version 1.5.0 \
             -n kured \
             --create-namespace \
             --set image.tag=$kuredVersion \
@@ -34,7 +34,7 @@ AZP_POOL=$AZP_AGENT_NAME
 
 kubectl create ns ado-agent
 kubectl create secret generic azp \
-  -n ado-agent
+  -n ado-agent \
   --from-literal=AZP_URL=$AZP_URL \
   --from-literal=AZP_TOKEN=$AZP_TOKEN \
   --from-literal=AZP_AGENT_NAME=$AZP_AGENT_NAME \
@@ -91,7 +91,7 @@ spec:
 EOF
 
 # Install cert-manager
-certManagerVersion=v0.14.3
+certManagerVersion=v0.15.0	
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/$certManagerVersion/cert-manager.crds.yaml
 helm repo add jetstack https://charts.jetstack.io
 helm repo update

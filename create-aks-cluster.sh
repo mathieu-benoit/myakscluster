@@ -2,6 +2,7 @@
 
 # Make sure we have the latest Azure CLI version, for example 2.2.0 is required for Private cluster.
 sudo apt-get update
+sudo apt-get autoremove
 sudo apt-get install azure-cli
 
 az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
@@ -82,8 +83,11 @@ az aks create \
   -k $k8sVersion \
   -s $NODE_SIZE \
   -c $NODE_COUNT \
+  --dns-name-prefix $AKS \
+  --nodepool-name system \
   --no-ssh-key \
   --enable-managed-identity \
+  --skip-subnet-role-assignment \
   --enable-private-cluster \
   --vnet-subnet-id $aksSubNetId \
   --network-plugin azure \
@@ -94,6 +98,19 @@ az aks create \
   --service-cidr $serviceCidr \
   --dns-service-ip $dnsServiceIp \
   $zones
+# Linux User Nodepool
+az aks nodepool add \
+    -g $RG \
+    --cluster-name $AKS \
+    -n userlinux \
+    --os-type Linux \
+    --mode User \
+    --labels kubernetes.azure.com/mode=user \
+    -s $NODE_SIZE \
+    -c $NODE_COUNT \
+    -k $k8sVersion \
+    $zones
+    #--vnet-subnet-id # still in preview and calico is not supported
 # Disable K8S dashboard
 az aks disable-addons -a kube-dashboard -n $AKS -g $RG
 # Azure Monitor for containers
