@@ -57,7 +57,9 @@ export K8S_VERSION=$(az aks get-versions \
 ```
 
 FYI, current issues/workarounds with Azure CLI:
-- FIXME
+- [az aks create|nodepool add --labels - labels ignored if prefix contains '.'](https://github.com/Azure/azure-cli/issues/13266)
+  - Need to manually apply the `kubernetes.azure.com/mode=user` k8s label on each `user` node.
+- [`az aks create --enable-managed-identity --vnet-subnet-id` failing](https://github.com/Azure/azure-cli/issues/12864)
 
 ## Provisioning Option 2: Terraform
 
@@ -75,7 +77,10 @@ terraform apply tf-plan
 ```
 
 FYI, current issues/workarounds with Terraform:
-- FIXME
+- [Support for mode:system pools in AKS](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6058)
+  - Waiting for implementation, the first nodepool is tagged as `user` instead of `system`.
+- [Support for list of private_ip_address attributes on azurerm_private_endpoint resource](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6571)
+  - I have a workaround currently.
 
 ## Configuration post-provisioning
 
