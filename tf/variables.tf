@@ -16,7 +16,7 @@ variable "location" {
   description = "Location of the resources."
 }
 
-variable "virtual_network_address_prefix" {
+variable "aks_vnet_address_prefix" {
   type        = string
   default     = "100.64.0.0/21"
   description = "The VNET's IP ranges, /21 represents 2048 IPs."
@@ -32,6 +32,12 @@ variable "aks_ingress_subnet_address_prefix" {
   type        = string
   default     = "100.64.2.0/24"
   description = "The AKS Ingress/Service Subnet's IP ranges, /24 represents 256 IPs."
+}
+
+variable "acr_subnet_address_prefix" {
+  type        = string
+  default     = "100.64.3.0/27"
+  description = "The ACR Subnet's IP ranges, /27 represents 32 IPs."
 }
 
 variable "aks_docker_bridge_cidr" {
@@ -75,4 +81,22 @@ variable "aks_availability_zones" {
   default     = []
   #default     = ["1", "2", "3"]
   description = "The AZs for the AKS's nodes/VMs."
+}
+
+variable "jb_vnet_address_prefix" {
+  type        = string
+  default     = "10.1.0.0/26"
+  description = "The VNET's IP ranges, /26 represents 64 IPs."
+}
+
+variable "jb_subnet_address_prefix" {
+  type        = string
+  default     = "10.1.0.0/27"
+  description = "The Jumpbox Subnet's IP ranges, /27 represents 32 IPs."
+}
+
+variable "bastion_subnet_address_prefix" {
+  type        = string
+  default     = "10.1.0.32/27"
+  description = "The Bastion Subnet's IP ranges, /27 represents 32 IPs."
 }
