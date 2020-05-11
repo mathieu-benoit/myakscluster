@@ -23,8 +23,9 @@ aksVnetPrefix='100.64.0.0/21' #2048 ips
 aksSubnetPrefix='100.64.0.0/23' #512 ips
 aksSvcSubnetPrefix='100.64.2.0/24' #256 ips
 acrSubnetPrefix='100.64.3.0/27' #32 ips
-jumpboxVnetPrefix='10.1.0.0/27' #32 ips
+jumpboxVnetPrefix='10.1.0.0/26' #64 ips
 jumpboxSubnetPrefix='10.1.0.0/27' #32 ips
+bastionSubnetPrefix='10.1.0.32/27' #32 ips
 
 ##
 # Create the AKS cluster
@@ -213,11 +214,6 @@ az vm create \
   --vnet-name $jumpBox \
   --custom-data cloud-init.sh \
   --ssh-key-values $JUMPBOX_SSH_KEY
-az network nsg rule update \
-  -n default-allow-ssh \
-  --nsg-name ${jumpBox}NSG \
-  -g $jumpBox \
-  --access Deny
 az network vnet peering create \
   -n jumpbox-aks \
   -g $jumpBox \
@@ -243,3 +239,25 @@ az network private-dns link vnet create \
   -v $jumpBoxVnetId \
   -z $aksPrivateDnsZone \
   -e false
+
+# Azure Bastion
+bastionSubNetId=$(az network vnet subnet create \
+  -g $jumpBox \
+  -n "AzureBastionSubnet" \
+  --vnet-name $jumpBox \
+  --address-prefixes $bastionSubnetPrefix \
+  --query id \
+  -o tsv)
+bastionPublicIp=$(az network public-ip create \
+  -g $jumpBox \
+  -n ${jumpBox}-bastion \
+  --allocation-method Static \
+  --sku Standard \
+  --query publicIp.ipAddress \
+  -o tsv)
+az network bastion create \
+  -n $jumpBox \
+  --public-ip-address $bastionPublicIp \
+  -g $jumpBox \
+  --vnet-name $jumpBox \
+  -l $LOCATION
