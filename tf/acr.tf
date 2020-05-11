@@ -61,14 +61,24 @@ resource "azurerm_private_endpoint" "private_endpoint_acr" {
   }
 }
 
+# https://www.terraform.io/docs/providers/external/data_source.html
+data "external" "get_acr_private_endpoint_private_ip" {
+  program = ["/bin/sh", "${path.module}/getAcrPrivateEndpointPrivateIp.sh"]
+
+  query = {
+    rg                  = azurerm_resource_group.rg_aks.name
+    privateEndpointName = azurerm_private_endpoint.private_endpoint_acr.name
+  }
+}
+
 # https://www.terraform.io/docs/providers/azurerm/r/private_dns_a_record.html
-#resource "azurerm_private_dns_a_record" "private_dns_a_record_acr" {
-#  name                = var.aks_name
-#  zone_name           = azurerm_private_dns_zone.private_dns_acr.name
-#  resource_group_name = azurerm_resource_group.rg_aks.name
-#  ttl                 = 300
-# records             = ["10.0.180.17"]
-#}
+resource "azurerm_private_dns_a_record" "private_dns_a_record_acr" {
+  name                = var.aks_name
+  zone_name           = azurerm_private_dns_zone.private_dns_acr.name
+  resource_group_name = azurerm_resource_group.rg_aks.name
+  ttl                 = 300
+  records             = [data.external.get_acr_private_endpoint_private_ip.result.acr_private_endpoint_private_ip]
+}
 
 resource "azurerm_private_dns_a_record" "private_dns_a_record_acr_data" {
   name                = "${var.aks_name}.${var.location}.data"

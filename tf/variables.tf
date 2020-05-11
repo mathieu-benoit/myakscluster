@@ -12,7 +12,7 @@ variable "k8s_version" {
 
 variable "location" {
   type        = string
-  default     = "eastus"
+  default     = "canadacentral"
   description = "Location of the resources."
 }
 
