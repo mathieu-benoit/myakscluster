@@ -26,46 +26,67 @@ Complementary Azure services to leverage:
 
 ![Architecture diagram](./myakscluster.png)
 
-# Setup
+# Provisioning
+
+## Configuration pre-provisioning
 
 ```
+az login
 #az account list -o table
 #az account set -s <subscriptionId>
-subscriptionId=$(az account show --query id -o tsv)
-tenantId=$(az account show --query tenantId -o tsv)
-spName=<spName>
-spSecret=$(az ad sp create-for-rbac -n $spName --role Owner --query password -o tsv)
-spId=$(az ad sp show --id http://$spName --query appId -o tsv)
 
-location=<location>
-kvName=<kvName>
-rg=<rg>
-az group create -n $rg -l $location
-az keyvault create -l $location -n $kvName -g $rg
-az keyvault secret set --vault-name $kvName -n subscriptionId --value $subscriptionId
-az keyvault secret set --vault-name $kvName -n spTenantId --value $tenantId
-az keyvault secret set --vault-name $kvName -n spId --value $spId
-az keyvault secret set --vault-name $kvName -n spSecret --value $spSecret
+export LOCATION='canadacentral'
+export NODES_COUNT=3
+export NODE_SIZE='Standard_DS2_v2'
+export ZONES=false
 
-az keyvault set-policy -n $kvName --spn $spId --secret-permissions get list
+./check-aks-cluster.sh
 
-#https://devblogs.microsoft.com/devops/using-azure-devops-from-the-command-line/
-az devops service-endpoint create --authorization-scheme ServicePrincipal
-                                  --name
-                                  --service-endpoint-type azurerm
-                                  [--azure-rm-service-principal-id]
-                                  [--azure-rm-subscription-id]
-                                  [--azure-rm-subscription-name]
-                                  [--azure-rm-tenant-id]
-                                  [--detect {false, true}]
-                                  [--org]
-                                  [--project]
+randomSuffix=$(shuf -i 1000-9999 -n 1)
+export AKS=FIXME-$randomSuffix
+export K8S_VERSION=$(az aks get-versions \
+  -l $LOCATION \
+  --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
+  -o tsv)
 ```
 
-# Setup once the AKS cluster is provisioned
+## Provisioning Option 1: Azure CLI
 
 ```
-./configure-ask-cluster.sh
+./create-aks-cluster.sh
+```
+
+FYI, current issues/workarounds with Azure CLI:
+- FIXME
+
+## Provisioning Option 2: Terraform
+
+```
+cd tf
+sudo terraform init
+terraform plan \
+  -var aks_name=$AKS \
+  -var k8s_version=$K8S_VERSION \
+  -var location=$LOCATION \
+  -var aks_node_count=$NODES_COUNT \
+  -var aks_node_size=$NODE_SIZE \
+  -out=tf-plan
+terraform apply tf-plan
+```
+
+FYI, current issues/workarounds with Terraform:
+- FIXME
+
+## Configuration post-provisioning
+
+You need to connect to the Jumpbox VM via the Bastion host and run the commands below:
+```
+./cloud-init.sh
+az login
+az aks get-credentials \
+  -g $RG \
+  -n $RG
+./configure-aks-cluster.sh
 ```
 
 # Pricing estimation
@@ -91,6 +112,7 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
   - Note: you may want to leverage PodAffinity to avoid cross-zones communications with Pods too chatty
 - [Private Endpoint](https://azure.microsoft.com/pricing/details/private-link/)
   - Estimation: For 2 Private Endpoints (AKS + ACR)
+- Bastion - TODO
 
 # Other considerations:
 
@@ -100,7 +122,7 @@ az devops service-endpoint create --authorization-scheme ServicePrincipal
 - [Audit logging in AKS](https://azure.microsoft.com/updates/audit-logging-in-azure-kubernetes-service-aks-is-now-available/)
 - [Azure AD PIM](https://docs.microsoft.com/azure/active-directory/privileged-identity-management/pim-configure)
 - [Azure DDOS Protection](https://docs.microsoft.com/azure/virtual-network/ddos-protection-overview)
-- Azure Front Door
+- Azure Front Door - TODO
 
 # Resources
 

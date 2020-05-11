@@ -1,32 +1,5 @@
 #!/bin/bash
 
-# Make sure we have the latest Azure CLI version, for example 2.2.0 is required for Private cluster.
-sudo apt-get update
-sudo apt-get autoremove
-sudo apt-get install azure-cli
-
-az login --service-principal -u $SP_ID -p $SP_SECRET --tenant $SP_TENANT_ID
-az account set -s $SUBSCRIPTION_ID
-
-# First checks before going anywhere:
-# Zones check
-if [[ $ZONES = "true" ]]; then
-      azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
-      if [[ ! " ${azLocations[@]} " =~ " ${LOCATION} " ]]; then
-            1>&2 echo "The location you selected doesn't support Availability Zones!"
-      fi
-fi
-# VM quota check
-vmFamily=$(az vm list-skus -l $LOCATION -s $NODE_SIZE --query [0].family -o tsv)
-az vm list-usage -l $LOCATION --query "[?name.value=='$vmFamily']"
-quotaCurrentValue=$(az vm list-usage -l $LOCATION --query "[?name.value=='$vmFamily'] | [0].currentValue" -o tsv)
-quotaLimit=$(az vm list-usage -l $LOCATION --query "[?name.value=='$vmFamily'] | [0].limit" -o tsv)
-expr $quotaLimit - $quotaCurrentValue
-if [[ $quotaRemaining = 0 ]]; 
-then 
-	1>&2 echo "You don't have enough quota remaining to provision your AKS cluster based on the VM family selected!" 
-fi
-
 # Define Zones value
 zones=""
 if [ $ZONES = "true" ]; then
@@ -34,8 +7,13 @@ if [ $ZONES = "true" ]; then
 fi
       
 # Create Resource Group and Lock
-az group create -n $RG -l $LOCATION
-az group lock create --lock-type CanNotDelete -n CanNotDelete -g $RG
+az group create \
+  -n $AKS \
+  -l $LOCATION
+az group lock create \
+  --lock-type CanNotDelete \
+  -n CanNotDelete \
+  -g $AKS
 
 # IP addresses ranges
 dockerBridgeAddress='172.17.0.1/27' #32 ips
@@ -52,37 +30,33 @@ jumpboxSubnetPrefix='10.1.0.0/27' #32 ips
 # Create the AKS cluster
 ##
 az network vnet create \
-  -g $RG \
+  -g $AKS \
   -n $AKS \
   --address-prefixes $aksVnetPrefix
 aksVnetId=$(az network vnet show \
-  -g $RG \
+  -g $AKS \
   -n $AKS \
   --query id \
   -o tsv)
 aksSubNetId=$(az network vnet subnet create \
-  -g $RG \
+  -g $AKS \
   -n $AKS-aks \
   --vnet-name $AKS \
   --address-prefixes $aksSubnetPrefix \
   --query id \
   -o tsv)
 az network vnet subnet create \
-  -g $RG \
+  -g $AKS \
   -n $AKS-svc \
   --vnet-name $AKS \
   --address-prefixes $aksSvcSubnetPrefix
-k8sVersion=$(az aks get-versions \
-  -l $LOCATION \
-  --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
-  -o tsv)
 az aks create \
   -l $LOCATION \
   -n $AKS \
-  -g $RG \
-  -k $k8sVersion \
+  -g $AKS \
+  -k $K8S_VERSION \
   -s $NODE_SIZE \
-  -c $NODE_COUNT \
+  -c $NODES_COUNT \
   --dns-name-prefix $AKS \
   --nodepool-name system \
   --no-ssh-key \
@@ -100,28 +74,40 @@ az aks create \
   $zones
 # Linux User Nodepool
 az aks nodepool add \
-    -g $RG \
-    --cluster-name $AKS \
-    -n userlinux \
-    --os-type Linux \
-    --mode User \
-    --labels kubernetes.azure.com/mode=user \
-    -s $NODE_SIZE \
-    -c $NODE_COUNT \
-    -k $k8sVersion \
-    $zones
-    #--vnet-subnet-id # still in preview and calico is not supported
+  -g $AKS \
+  --cluster-name $AKS \
+  -n userlinux \
+  --os-type Linux \
+  --mode User \
+  --labels kubernetes.azure.com/mode=user \
+  -s $NODE_SIZE \
+  -c $NODES_COUNT \
+  -k $K8S_VERSION \
+  $zones
+  #--vnet-subnet-id # still in preview and calico is not supported
 # Disable K8S dashboard
-az aks disable-addons -a kube-dashboard -n $AKS -g $RG
+az aks disable-addons \
+  -a kube-dashboard \
+  -n $AKS \
+  -g $AKS
 # Azure Monitor for containers
-workspaceResourceId=$(az monitor log-analytics workspace create -g $RG -n $AKS -l $LOCATION --query id -o tsv)
-az aks enable-addons -a monitoring -n $AKS -g $RG --workspace-resource-id $workspaceResourceId
+workspaceResourceId=$(az monitor log-analytics workspace create \
+  -g $AKS \
+  -n $AKS \
+  -l $LOCATION \
+  --query id \
+  -o tsv)
+az aks enable-addons \
+  -a monitoring \
+  -n $AKS \
+  -g $AKS \
+  --workspace-resource-id $workspaceResourceId
 
 ##
 # Azure Container Registry (ACR)
 ##
 acrSubNetId=$(az network vnet subnet create \
-  -g $RG \
+  -g $AKS \
   -n $AKS-acr \
   --vnet-name $AKS \
   --address-prefixes $acrSubnetPrefix \
@@ -130,37 +116,37 @@ acrSubNetId=$(az network vnet subnet create \
 az network vnet subnet update \
   -n $AKS-acr \
   --vnet-name $AKS \
-  -g $RG \
+  -g $AKS \
   --disable-private-endpoint-network-policies
 acrPrivateZone="privatelink.azurecr.io"
 az network private-dns zone create \
-  -g $RG \
+  -g $AKS \
   -n $acrPrivateZone
 az network private-dns link vnet create \
-  -g $RG \
+  -g $AKS \
   -z $acrPrivateZone \
   -n $AKS-acr \
   -v $AKS \
   --registration-enabled false
 acrId=$(az acr create \
   -n $AKS \
-  -g $RG \
+  -g $AKS \
   -l $LOCATION \
   --sku Premium \
   --query id \
   -o tsv)
 az acr update \
   -n $AKS \
-  -g $RG \
+  -g $AKS \
   --default-action Deny
 az aks update \
-  -g $RG \
+  -g $AKS \
   -n $AKS \
   --attach-acr $acrId
 privateEndpointName=$AKS-acr
 az network private-endpoint create \
   -n $privateEndpointName \
-  -g $RG \
+  -g $AKS \
   --vnet-name $AKS \
   --subnet $AKS-acr \
   --private-connection-resource-id $acrId \
@@ -168,7 +154,7 @@ az network private-endpoint create \
   --connection-name $privateEndpointName
 networkInterfaceId=$(az network private-endpoint show \
   -n $privateEndpointName \
-  -g $RG \
+  -g $AKS \
   --query 'networkInterfaces[0].id' \
   --output tsv)
 privateIp=$(az resource show \
@@ -183,20 +169,20 @@ dataEndpointPrivateIp=$(az resource show \
 az network private-dns record-set a create \
   -n $AKS \
   -z $acrPrivateZone \
-  -g $RG
+  -g $AKS
 az network private-dns record-set a create \
   -n ${AKS}.${LOCATION}.data \
   -z $acrPrivateZone \
-  -g $RG
+  -g $AKS
 az network private-dns record-set a add-record \
   -n $AKS \
   -z $acrPrivateZone \
-  -g $RG \
+  -g $AKS \
   -a $privateIp
 az network private-dns record-set a add-record \
   -n ${AKS}.${LOCATION}.data \
   -z $acrPrivateZone \
-  -g $RG \
+  -g $AKS \
   -a $dataEndpointPrivateIp
 
 ##
@@ -240,13 +226,13 @@ az network vnet peering create \
   --allow-vnet-access
 az network vnet peering create \
   -n aks-jumpbox \
-  -g $RG \
+  -g $AKS \
   --vnet-name $AKS \
   --remote-vnet $jumpBoxVnetId \
   --allow-vnet-access
 aksNodesResourceGroup=$(az aks show \
   -n $AKS \
-  -g $RG \
+  -g $AKS \
   --query nodeResourceGroup -o tsv)
 aksPrivateDnsZone=$(az network private-dns zone list \
     -g $aksNodesResourceGroup \
