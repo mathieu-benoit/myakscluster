@@ -4,8 +4,16 @@ provider "azurerm" {
   features {}
 }
 
+provider "azuread" {
+  version = "=0.8.0"
+}
+
 provider "external" {
   version = "=1.2.0"
+}
+
+provider "random" {
+  version = "=2.2.1"
 }
 
 # + Terraform State in Blog storage account access (vnet peering + vnet link in private dns)
