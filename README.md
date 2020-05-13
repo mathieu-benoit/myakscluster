@@ -15,6 +15,7 @@ Basic - without cost:
 - [X] Azure KeyVault for Azure pipelines [#3](https://github.com/mathieu-benoit/myakscluster/issues/3)
 
 Advanced - with cost:
+- [X] Uptime SLA [#66](https://github.com/mathieu-benoit/myakscluster/issues/66)
 - [X] Private AKS cluster + Private ACR + Jumpbox with Azure Private Endpoint [#57](https://github.com/mathieu-benoit/myakscluster/issues/57)
   - Alternatively: Use [Authorized IP addresses with AKS](https://docs.microsoft.com/azure/aks/api-server-authorized-ip-ranges) and [Azure Service Endpoint with ACR](https://docs.microsoft.com/azure/container-registry/container-registry-vnet).
 - [ ] Limit Egress Traffic with Azure Firewall [#16](https://github.com/mathieu-benoit/myakscluster/issues/16)
@@ -97,7 +98,7 @@ az aks get-credentials \
 # Pricing estimation
 
 - [AKS](https://azure.microsoft.com/pricing/details/kubernetes-service/)
-  - Free.
+  - $0.10 per cluster per hour.
 - [Virtual Machines](https://azure.microsoft.com/pricing/details/virtual-machines/linux/) related to AKS worker nodes
   - Estimation: For 3 Standard_DS2_v2 Ubuntu worker nodes, ~ $xx USD/month
   - To decrease the cost: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances/) to reduce the cost of your AKS worker nodes
