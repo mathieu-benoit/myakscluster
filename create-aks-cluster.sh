@@ -58,6 +58,7 @@ az aks create \
   -k $K8S_VERSION \
   -s $NODE_SIZE \
   -c $NODES_COUNT \
+  --uptime-sla \
   --dns-name-prefix $AKS \
   --nodepool-name system \
   --no-ssh-key \
