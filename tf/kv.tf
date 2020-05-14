@@ -18,14 +18,14 @@ resource "azuread_service_principal" "sp_aks_user" {
 
 # https://www.terraform.io/docs/providers/random/r/password.html
 resource "random_password" "sp_acr_push" {
-  length  = 16
+  length  = 24
   special = true
   min_numeric = 1
   min_special = 1
 }
 
 resource "random_password" "sp_aks_user" {
-  length  = 16
+  length  = 24
   special = true
   min_numeric = 1
   min_special = 1
@@ -67,17 +67,20 @@ resource "azurerm_key_vault" "kv" {
   tenant_id           = data.azurerm_client_config.current.tenant_id
 
   sku_name = "standard"
+}
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = data.azurerm_client_config.current.object_id
+# https://www.terraform.io/docs/providers/azurerm/r/key_vault_access_policy.html
+resource "azurerm_key_vault_access_policy" "kv_access_policy_set_secrets" {
+  key_vault_id = azurerm_key_vault.kv.id
 
-    secret_permissions = [
+  tenant_id = data.azurerm_client_config.current.tenant_id
+  object_id = data.azurerm_client_config.current.object_id
+
+  secret_permissions = [
       "set",
       "get",
       "delete",
     ]
-  }
 }
 
 # https://www.terraform.io/docs/providers/azurerm/r/key_vault_secret.html
@@ -90,6 +93,12 @@ resource "azurerm_key_vault_secret" "sp_login_acr_push" {
 resource "azurerm_key_vault_secret" "sp_password_acr_push" {
   name         = "registryPassword"
   value        = random_password.sp_acr_push.result
+  key_vault_id = azurerm_key_vault.kv.id
+}
+
+resource "azurerm_key_vault_secret" "acr_name" {
+  name         = "registryName"
+  value        = azurerm_container_registry.acr.name
   key_vault_id = azurerm_key_vault.kv.id
 }
 
@@ -108,5 +117,17 @@ resource "azurerm_key_vault_secret" "sp_password_aks_user" {
 resource "azurerm_key_vault_secret" "sp_tenant_id_aks_user" {
   name         = "aksSpTenantId"
   value        = data.azurerm_client_config.current.tenant_id
+  key_vault_id = azurerm_key_vault.kv.id
+}
+
+resource "azurerm_key_vault_secret" "aks_name_aks_user" {
+  name         = "aksName"
+  value        = azurerm_kubernetes_cluster.aks.name
+  key_vault_id = azurerm_key_vault.kv.id
+}
+
+resource "azurerm_key_vault_secret" "aks_rg_name_aks_user" {
+  name         = "aksResourceGroupName"
+  value        = azurerm_resource_group.rg_aks.name
   key_vault_id = azurerm_key_vault.kv.id
 }
