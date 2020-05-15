@@ -131,3 +131,9 @@ resource "azurerm_key_vault_secret" "aks_rg_name_aks_user" {
   value        = azurerm_resource_group.rg_aks.name
   key_vault_id = azurerm_key_vault.kv.id
 }
+
+resource "azurerm_key_vault_secret" "aks_location_aks_user" {
+  name         = "aksLocation"
+  value        = var.location
+  key_vault_id = azurerm_key_vault.kv.id
+}
