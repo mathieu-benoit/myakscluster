@@ -49,6 +49,9 @@ export K8S_VERSION=$(az aks get-versions \
   -l $LOCATION \
   --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
   -o tsv)
+
+AZDO_ORG_SERVICE_URL=https://dev.azure.com/FIXME
+AZDO_PERSONAL_ACCESS_TOKEN=FIXME
 ```
 
 ## Provisioning Option 1: Azure CLI
@@ -61,6 +64,7 @@ FYI, current issues/workarounds with Azure CLI:
 - [az aks create|nodepool add --labels - labels ignored if prefix contains '.'](https://github.com/Azure/azure-cli/issues/13266)
   - Need to manually apply the `kubernetes.azure.com/mode=user` k8s label on each `user` node.
 - [`az aks create --enable-managed-identity --vnet-subnet-id` failing](https://github.com/Azure/azure-cli/issues/12864)
+  - See [this workaround](https://github.com/Azure/azure-cli/issues/12864#issuecomment-623806966).
 
 ## Provisioning Option 2: Terraform
 
@@ -80,12 +84,14 @@ terraform apply tf-plan
 FYI, current issues/workarounds with Terraform:
 - [Support for mode:system pools in AKS](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6058)
   - Waiting for implementation, the first nodepool is tagged as `user` instead of `system`.
+- [AKS's Uptime SLA not yet supported](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6912)
 - [Support for list of private_ip_address attributes on azurerm_private_endpoint resource](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6571)
   - I have a workaround currently.
+- [The `azuredevops` TF provider is yet in the TF registry](https://github.com/microsoft/terraform-provider-azuredevops/issues/325)
 
 ## Configuration post-provisioning
 
-You need to connect to the Jumpbox VM via the Bastion host and run the commands below:
+You need to [connect to the Jumpbox VM via the Bastion host](https://docs.microsoft.com/azure/bastion/bastion-connect-vm-ssh) and run the commands below:
 ```
 ./cloud-init.sh
 az login

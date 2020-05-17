@@ -35,13 +35,13 @@ resource "random_password" "sp_aks_user" {
 resource "azuread_service_principal_password" "sp_acr_push" {
   service_principal_id = azuread_service_principal.sp_acr_push.id
   value                = random_password.sp_acr_push.result
-  end_date             = "2099-01-01T01:02:03Z"
+  end_date             = var.sp_password_end_date
 }
 
 resource "azuread_service_principal_password" "sp_aks_user" {
   service_principal_id = azuread_service_principal.sp_aks_user.id
   value                = random_password.sp_aks_user.result
-  end_date             = "2099-01-01T01:02:03Z"
+  end_date             = var.sp_password_end_date
 }
 
 # https://www.terraform.io/docs/providers/azurerm/r/role_assignment.html
@@ -56,8 +56,6 @@ resource "azurerm_role_assignment" "sp_aks_user" {
   role_definition_name = "Azure Kubernetes Service Cluster User Role"
   principal_id         = azuread_service_principal.sp_aks_user.object_id
 }
-
-data "azurerm_client_config" "current" {}
 
 # https://www.terraform.io/docs/providers/azurerm/r/key_vault.html
 resource "azurerm_key_vault" "kv" {

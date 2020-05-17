@@ -100,3 +100,9 @@ variable "bastion_subnet_address_prefix" {
   default     = "10.1.0.32/27"
   description = "The Bastion Subnet's IP ranges, /27 represents 32 IPs."
 }
+
+variable "sp_password_end_date" {
+  type        = string
+  default     = "2020-10-01T01:02:03Z"
+  description = "The end date for the SP's passwords."
+}

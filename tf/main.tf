@@ -16,8 +16,10 @@ provider "random" {
   version = "=2.2.1"
 }
 
-# + Terraform State in Blog storage account access (vnet peering + vnet link in private dns)
+/*provider "azuredevops" {
+  version = "=0.1.2"
+}*/
 
-# + Azure DevOps interaction to update variable groups (ACR sp credentials and AKS sp credentials)?
-# https://github.com/microsoft/terraform-provider-azuredevops/blob/master/examples/azdo-based-cicd/main.tf#L56
-# Or alternatively changing this for Azure Key Vault? Maybe better?
+data "azurerm_client_config" "current" {}
+
+# TODO: Terraform State in Blog storage account access (vnet peering + vnet link in private dns)
