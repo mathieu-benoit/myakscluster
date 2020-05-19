@@ -18,7 +18,7 @@ resource "azurerm_virtual_network" "vnet_jb" {
 
 # https://www.terraform.io/docs/providers/azurerm/r/subnet.html
 resource "azurerm_subnet" "subnet_jb" {
-  name                 = "subnet_jb"
+  name                 = "jumpbox"
   resource_group_name  = azurerm_resource_group.rg_jb.name
   virtual_network_name = azurerm_virtual_network.vnet_jb.name
   address_prefixes     = [var.jb_subnet_address_prefix]
@@ -117,7 +117,7 @@ resource "azurerm_public_ip" "bastion_host_ip_jb" {
 
 # https://www.terraform.io/docs/providers/azurerm/r/bastion_host.html
 resource "azurerm_bastion_host" "bastion_host_jb" {
-  name                = "bastion_host_jb"
+  name                = local.jb_name
   location            = var.location
   resource_group_name = azurerm_resource_group.rg_jb.name
 
@@ -126,4 +126,46 @@ resource "azurerm_bastion_host" "bastion_host_jb" {
     subnet_id            = azurerm_subnet.subnet_bastion.id
     public_ip_address_id = azurerm_public_ip.bastion_host_ip_jb.id
   }
+}
+
+# https://www.terraform.io/docs/providers/azurerm/r/network_security_group.html
+resource "azurerm_network_security_group" "nsg_vm_jb" {
+  name                = local.jb_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg_jb.name
+}
+
+# https://www.terraform.io/docs/providers/azurerm/r/network_security_rule.html
+resource "azurerm_network_security_rule" "allow_ssh_from_bastion" {
+  name                        = "AllowSshFromBastionSubnet"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22"
+  source_address_prefix       = var.bastion_subnet_address_prefix
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg_jb.name
+  network_security_group_name = azurerm_network_security_group.nsg_vm_jb.name
+}
+
+resource "azurerm_network_security_rule" "deny_all_inbound" {
+  name                        = "DenyAllInBound"
+  priority                    = 101
+  direction                   = "Inbound"
+  access                      = "Deny"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg_jb.name
+  network_security_group_name = azurerm_network_security_group.nsg_vm_jb.name
+}
+
+# https://www.terraform.io/docs/providers/azurerm/r/subnet_network_security_group_association.html
+resource "azurerm_subnet_network_security_group_association" "subnet_nsg_vm_jb" {
+  subnet_id                 = azurerm_subnet.subnet_bastion.id
+  network_security_group_id = azurerm_network_security_group.nsg_vm_jb.id
 }
