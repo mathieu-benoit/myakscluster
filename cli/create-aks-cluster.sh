@@ -213,7 +213,7 @@ az vm create \
   --size Standard_B2s \
   --subnet $jumpBox \
   --vnet-name $jumpBox \
-  --custom-data cloud-init.sh \
+  --custom-data "../cloud-init.sh" \
   --ssh-key-values $JUMPBOX_SSH_KEY
 az network vnet peering create \
   -n jumpbox-aks \
@@ -262,3 +262,30 @@ az network bastion create \
   -g $jumpBox \
   --vnet-name $jumpBox \
   -l $LOCATION
+
+# SPs in Azure KeyVault and Azure DevOps
+registryPassword=$(az ad sp create-for-rbac \
+  -n $AKS-push \
+  --scopes $acrId \
+  --role acrpush \
+  --query password \
+  -o tsv)
+registryLogin=$(az ad sp show \
+  --id http://$AKS-push \
+  --query appId \
+  -o tsv)
+aksId=$(az aks show \
+  -n $AKS \
+  -g $AKS \
+  --query id \
+  -o tsv)
+aksSpPassword=$(az ad sp create-for-rbac \
+  -n $AKS-deploy \
+  --scopes $aksId \
+  --role "Azure Kubernetes Service Cluster User Role" \
+  --query password -o tsv)
+aksSpLogin=$(az ad sp show \
+  --id http://$AKS-deploy \
+  --query appId \
+  -o tsv)
+

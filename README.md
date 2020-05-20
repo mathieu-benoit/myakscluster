@@ -29,6 +29,14 @@ Complementary Azure services to leverage:
 
 # Provisioning
 
+## Prerequesities
+
+- Install Azure CLI
+- Install Terraform (optional)
+- Install Azure DevOps CLI extension
+- Install Azure ConnectedK8s CLI extension
+- Install Azure KubernetesConfiguration CLI extension
+
 ## Configuration pre-provisioning
 
 ```
@@ -57,6 +65,7 @@ AZDO_PERSONAL_ACCESS_TOKEN=FIXME
 ## Provisioning Option 1: Azure CLI
 
 ```
+cd cli
 ./create-aks-cluster.sh
 ```
 
@@ -94,7 +103,11 @@ FYI, current issues/workarounds with Terraform:
 You need to [connect to the Jumpbox VM via the Bastion host](https://docs.microsoft.com/azure/bastion/bastion-connect-vm-ssh) and run the commands below:
 ```
 ./cloud-init.sh
-az login
+az login \
+  --service-principal \
+  -u FIXME \
+  -p FIXME \
+  --tenant-id FIXME
 az aks get-credentials \
   -g $RG \
   -n $RG
