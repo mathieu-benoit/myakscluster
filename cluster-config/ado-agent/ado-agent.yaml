@@ -47,4 +47,3 @@ spec:
       nodeSelector:
         kubernetes.io/os: linux
         kubernetes.azure.com/mode: user
-EOF
