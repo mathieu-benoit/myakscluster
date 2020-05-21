@@ -46,3 +46,4 @@ spec:
             path: /var/run/docker.sock
       nodeSelector:
         kubernetes.io/os: linux
+        kubernetes.azure.com/mode: user
