@@ -58,7 +58,6 @@ az aks create \
   -k $K8S_VERSION \
   -s $NODE_SIZE \
   -c $NODES_COUNT \
-  --uptime-sla \
   --dns-name-prefix $AKS \
   --nodepool-name system \
   --no-ssh-key \
@@ -265,7 +264,7 @@ az network bastion create \
 
 # SPs in Azure KeyVault and Azure DevOps
 registryPassword=$(az ad sp create-for-rbac \
-  -n $AKS-push \
+  -n https://$AKS-push \
   --scopes $acrId \
   --role acrpush \
   --query password \
@@ -274,18 +273,28 @@ registryLogin=$(az ad sp show \
   --id http://$AKS-push \
   --query appId \
   -o tsv)
+aksSpPassword=$(az ad sp create-for-rbac \
+  -n https://$AKS-deploy \
+  --skip-assignment \
+  --query password -o tsv)
+aksSpAppId=$(az ad sp show \
+  --id http://$AKS-deploy \
+  --query appId \
+  -o tsv)
 aksId=$(az aks show \
   -n $AKS \
   -g $AKS \
   --query id \
   -o tsv)
-aksSpPassword=$(az ad sp create-for-rbac \
-  -n $AKS-deploy \
-  --scopes $aksId \
+az role assignment create \
   --role "Azure Kubernetes Service Cluster User Role" \
-  --query password -o tsv)
-aksSpLogin=$(az ad sp show \
-  --id http://$AKS-deploy \
-  --query appId \
+  --assignee $aksSpAppId \
+  --scope $aksId
+rgId=$(az group show \
+  - n $AKS \
+  --query id \
   -o tsv)
-
+az role assignment create \
+  --role "Kubernetes Cluster - Azure Arc Onboarding" \
+  --assignee $aksSpAppId \
+  --scope $rgId
