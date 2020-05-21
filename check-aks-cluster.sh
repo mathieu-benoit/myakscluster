@@ -1,5 +1,8 @@
 #!/bin/bash
 
+az provider register --namespace Microsoft.Kubernetes
+az provider register --namespace Microsoft.KubernetesConfiguration
+
 # Zones
 if [[ $ZONES = "true" ]]; then
       azLocations=(centralus eastus eastus2 westus2 francecentral northeurope uksouth westeurope japaneast southeastasia)
