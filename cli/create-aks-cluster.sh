@@ -204,6 +204,7 @@ jumpBoxVnetId=$(az network vnet show \
   -g $jumpBox \
   --query id \
   -o tsv)
+# FIXME: have this VM with just a Private IP, not a Public IP (like done with Terraform)
 az vm create \
   -n $jumpBox \
   -g $jumpBox \
@@ -261,6 +262,7 @@ az network bastion create \
   -g $jumpBox \
   --vnet-name $jumpBox \
   -l $LOCATION
+# FIXME: add an NSG to only allow Bastion's Subnet to access the Jumpbox VM's Subnet (like done in Terraform)
 
 # SPs in Azure KeyVault and Azure DevOps
 registryPassword=$(az ad sp create-for-rbac \
