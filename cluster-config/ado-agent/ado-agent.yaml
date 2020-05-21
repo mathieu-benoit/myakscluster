@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ado-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ado-agent
+  template:
+    metadata:
+      labels:
+        app: ado-agent
+    spec:
+      containers:
+      - name: ado-agent
+        image: mabenoit/ado-agent:14104
+        env:
+          - name: AZP_URL
+            valueFrom:
+              secretKeyRef:
+                name: ado-agent
+                key: AZP_URL
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: ado-agent
+                key: AZP_TOKEN
+          - name: AZP_AGENT_NAME
+            valueFrom:
+              secretKeyRef:
+                name: ado-agent
+                key: AZP_AGENT_NAME
+          - name: AZP_POOL
+            valueFrom:
+              secretKeyRef:
+                name: ado-agent
+                key: AZP_POOL
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-socket-volume
+      volumes:
+        - name: docker-socket-volume
+          hostPath:
+            path: /var/run/docker.sock
+      nodeSelector:
+        kubernetes.io/os: linux
+        kubernetes.azure.com/mode: user
+EOF
