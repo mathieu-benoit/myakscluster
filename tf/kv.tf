@@ -57,6 +57,12 @@ resource "azurerm_role_assignment" "sp_aks_user" {
   principal_id         = azuread_service_principal.sp_aks_user.object_id
 }
 
+resource "azurerm_role_assignment" "sp_arc_user" {
+  scope                = azurerm_resource_group.rg_aks.id
+  role_definition_name = "Kubernetes Cluster - Azure Arc Onboarding"
+  principal_id         = azuread_service_principal.sp_aks_user.object_id
+}
+
 # https://www.terraform.io/docs/providers/azurerm/r/key_vault.html
 resource "azurerm_key_vault" "kv" {
   name                = var.aks_name

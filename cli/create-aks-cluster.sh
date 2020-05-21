@@ -298,3 +298,5 @@ az role assignment create \
   --role "Kubernetes Cluster - Azure Arc Onboarding" \
   --assignee $aksSpAppId \
   --scope $rgId
+
+# FIXME: add those values in Azure KeyVault (like done with Terraform)
