@@ -1,0 +1,31 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: kured
+  namespace: kured
+spec:
+  releaseName: kured
+  targetNamespace: kured
+  chart:
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    name: stable/kured
+    version: 1.5.0
+  values:
+    image:
+      tag: 1.4.0
+    nodeSelector:
+      kubernetes.io/os: linux
+    extraArgs:
+      start-time: 9am
+      end-time: 5pm
+      time-zone: America/Toronto
+      reboot-days: mon,tue,wed,thu,fri
+    tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - operator: Exists
+        effect: NoExecute
+      - operator: Exists
+        effect: NoSchedule
