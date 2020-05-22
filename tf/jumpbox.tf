@@ -74,6 +74,25 @@ resource "azurerm_linux_virtual_machine" "vm_jb" {
   }
 }
 
+# https://www.terraform.io/docs/providers/azurerm/r/virtual_machine_extension.html
+resource "azurerm_virtual_machine_extension" "fetch" {
+  name                 = "CustomScriptExtension"
+  location             = var.location
+  virtual_machine_id = azurerm_virtual_machine.vm_jb.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.0"
+
+  settings = <<SETTINGS
+    {
+        "fileUris": [
+        "https://raw.githubusercontent.com/mathieu-benoit/myakscluster/master/cloud-init.sh"
+        ],
+        "commandToExecute": "sh cloud-init.sh"
+    }
+SETTINGS
+}
+
 # https://www.terraform.io/docs/providers/azurerm/r/virtual_network_peering.html
 resource "azurerm_virtual_network_peering" "vnet_peering_jb_aks" {
   name                      = "jumpbox-aks"
