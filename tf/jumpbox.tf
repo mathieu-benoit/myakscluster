@@ -75,10 +75,10 @@ resource "azurerm_linux_virtual_machine" "vm_jb" {
 }
 
 # https://www.terraform.io/docs/providers/azurerm/r/virtual_machine_extension.html
-resource "azurerm_virtual_machine_extension" "fetch" {
+resource "azurerm_virtual_machine_extension" "vm_jb_cloud_init" {
   name                 = "CustomScriptExtension"
   location             = var.location
-  virtual_machine_id = azurerm_virtual_machine.vm_jb.id
+  virtual_machine_id   = azurerm_virtual_machine.vm_jb.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
   type_handler_version = "2.0"
