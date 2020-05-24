@@ -55,6 +55,8 @@ resource "azuredevops_serviceendpoint_azurerm" "endpointazure" {
   azurerm_subscription_name = "Sample Subscription"
 }*/
 
+# Otherwise use this https://www.terraform.io/docs/providers/null/resource.html to levarage the ADO CLI instead
+
 output "sp_kv_list_application_id" {
   description = "KeyVault list SP's applicationid for Service Endpoint in Azure DevOps."
   value       = azuread_service_principal.sp_kv_list.application_id
