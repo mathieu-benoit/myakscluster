@@ -12,8 +12,11 @@ variable "k8s_version" {
 
 variable "aks_os_disk_size" {
   type        = number
-  default     = 3200
+  default     = 1024
   description = "The size of the OS disks for AKS's nodes."
+  # 100  --> P10 ~20$US/month
+  # 1024 --> P30 ~135$US/month
+  # 3200 --> P50 ~500$US/month
 }
 
 variable "location" {
