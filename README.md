@@ -102,7 +102,6 @@ FYI, current issues/workarounds with Terraform:
 
 You need to [connect to the Jumpbox VM via the Bastion host](https://docs.microsoft.com/azure/bastion/bastion-connect-vm-ssh) and run the commands below:
 ```
-./cloud-init.sh
 az login \
   --service-principal \
   -u FIXME \
@@ -116,12 +115,14 @@ az aks get-credentials \
 
 # Pricing estimation
 
-- [AKS](https://azure.microsoft.com/pricing/details/kubernetes-service/)
+- [AKS](https://azure.microsoft.com/pricing/details/kubernetes-service)
   - $0.10 per cluster per hour.
-- [Virtual Machines](https://azure.microsoft.com/pricing/details/virtual-machines/linux/) related to AKS worker nodes
+- [Virtual Machines](https://azure.microsoft.com/pricing/details/virtual-machines/linux) related to AKS worker nodes
   - Estimation: For 2 Node pools X 3 Standard_D2s_v3 Ubuntu worker nodes, ~ $xx USD/month
-  - To decrease the cost: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances/) to reduce the cost of your AKS worker nodes
-- [Log Analytics Workspace](https://azure.microsoft.com/pricing/details/monitor/) (related to the Azure Monitor for Containers add-on)
+  - To decrease the cost: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances) to reduce the cost of your AKS worker nodes
+- [Managed Disks](https://azure.microsoft.com/pricing/details/managed-disks) (related to the AKS's Nodes OS Disk)
+  - Estimation: ~ $xx USD/month
+- [Log Analytics Workspace](https://azure.microsoft.com/pricing/details/monitor) (related to the Azure Monitor for Containers add-on)
   - Estimation: For xx GB/month, ~ $xx USD/month
   - To decrease the cost: you may want to leverage [logs filtering](https://docs.microsoft.com/azure/azure-monitor/insights/container-insights-agent-config), [retention by data type](https://docs.microsoft.com/azure/azure-monitor/platform/manage-cost-storage#retention-by-data-type) or [New capacity-based pricing option](https://azure.microsoft.com/updates/azure-monitor-log-analytics-new-capacity-based-pricing-option-is-now-available/).
 - [Standard Load Balancer](https://azure.microsoft.com/pricing/details/load-balancer/)
