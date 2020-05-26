@@ -81,7 +81,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type               = "VirtualMachineScaleSets"
     vnet_subnet_id     = azurerm_subnet.subnet_aks_nodes.id
     availability_zones = var.aks_availability_zones
-    #os_disk_size_gb   = var.os_disk_size_gb
+    os_disk_size_gb    = var.aks_os_disk_size
   }
 
   identity {
@@ -120,6 +120,6 @@ resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
   node_labels           = {
       "kubernetes.azure.com/mode" = "user"
     }
-  availability_zones = var.aks_availability_zones
-  #os_disk_size_gb
+  availability_zones    = var.aks_availability_zones
+  os_disk_size_gb       = var.aks_os_disk_size
 }

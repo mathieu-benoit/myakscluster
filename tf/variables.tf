@@ -6,8 +6,14 @@ variable "aks_name" {
 
 variable "k8s_version" {
   type        = string
-  default     = "1.16.7"
+  default     = "1.16.9"
   description = "The K8S version."
+}
+
+variable "aks_os_disk_size" {
+  type        = number
+  default     = 3200
+  description = "The size of the OS disks for AKS's nodes."
 }
 
 variable "location" {
