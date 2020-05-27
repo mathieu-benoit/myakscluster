@@ -8,7 +8,7 @@ spec:
   targetNamespace: kured
   chart:
     repository: https://kubernetes-charts.storage.googleapis.com/
-    name: stable/kured
+    name: kured
     version: 1.5.0
   values:
     image:
