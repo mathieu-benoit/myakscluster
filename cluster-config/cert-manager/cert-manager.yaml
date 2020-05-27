@@ -8,7 +8,7 @@ spec:
   targetNamespace: cert-manager
   chart:
     repository: https://charts.jetstack.io
-    name: jetstack/cert-manager
+    name: cert-manager
     version: v0.15.1
   values:
     installCRDs: true
