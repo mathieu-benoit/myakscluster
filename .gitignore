@@ -2,3 +2,4 @@ tf/terraform.tfstate
 tf/.terraform
 tf/.terraform.tfstate.lock.info
 tf/terraform.tfstate.backup
+tf/tf-plan

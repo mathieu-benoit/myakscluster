@@ -77,7 +77,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   default_node_pool {
     name               = "system"
     node_count         = var.aks_node_count
-    vm_size            = var.aks_vm_size
+    vm_size            = var.aks_node_size
     type               = "VirtualMachineScaleSets"
     vnet_subnet_id     = azurerm_subnet.subnet_aks_nodes.id
     availability_zones = var.aks_availability_zones
@@ -114,7 +114,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
   name                  = "userlinux"
   os_type               = "Linux"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.aks.id
-  vm_size               = var.aks_vm_size
+  vm_size               = var.aks_node_size
   node_count            = var.aks_node_count
   vnet_subnet_id        = azurerm_subnet.subnet_aks_nodes.id #limitation currently with having a different subnet per nodepool, calico netpol not working.
   node_labels           = {

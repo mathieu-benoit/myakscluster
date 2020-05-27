@@ -67,7 +67,7 @@ variable "aks_dns_service_ip" {
   description = "The K8S's DNS Service IP, /24 represents 256 IPs."
 }
 
-variable "aks_vm_size" {
+variable "aks_node_size" {
   type        = string
   default     = "Standard_D2s_v3"
   description = "The size of the AKS's nodes/VMs."

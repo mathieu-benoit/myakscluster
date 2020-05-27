@@ -52,14 +52,11 @@ export ZONES=false
 ./check-aks-cluster.sh
 
 randomSuffix=$(shuf -i 1000-9999 -n 1)
-export AKS=FIXME-$randomSuffix
+export AKS=FIXME$randomSuffix
 export K8S_VERSION=$(az aks get-versions \
   -l $LOCATION \
   --query "orchestrators[?isPreview==null].orchestratorVersion | [-1]" \
   -o tsv)
-
-AZDO_ORG_SERVICE_URL=https://dev.azure.com/FIXME
-AZDO_PERSONAL_ACCESS_TOKEN=FIXME
 ```
 
 ## Provisioning Option 1: Azure CLI
