@@ -53,7 +53,7 @@ resource "azurerm_role_assignment" "sp_acr_push" {
 
 resource "azurerm_role_assignment" "sp_aks_user" {
   scope                = azurerm_kubernetes_cluster.aks.id
-  role_definition_name = "Azure Kubernetes Service Cluster User Role"
+  role_definition_name = "Azure Kubernetes Service Cluster Admin Role"
   principal_id         = azuread_service_principal.sp_aks_user.object_id
 }
 
