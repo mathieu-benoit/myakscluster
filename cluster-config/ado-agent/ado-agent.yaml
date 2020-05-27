@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ado-agent
-        image: mabenoit/ado-agent:14104
+        image: mabenoit/ado-agent:14497
         env:
           - name: AZP_URL
             valueFrom:
