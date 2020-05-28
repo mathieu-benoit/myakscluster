@@ -82,9 +82,14 @@ terraform plan \
   -var k8s_version=$K8S_VERSION \
   -var location=$LOCATION \
   -var aks_node_count=$NODES_COUNT \
-  -var aks_node_size=$NODE_SIZE \
-  -out=tf-plan
-terraform apply tf-plan
+  -var aks_node_size=$NODE_SIZE
+terraform apply \
+  -auto-approve \
+  -var aks_name=$AKS \
+  -var k8s_version=$K8S_VERSION \
+  -var location=$LOCATION \
+  -var aks_node_count=$NODES_COUNT \
+  -var aks_node_size=$NODE_SIZE
 ```
 
 FYI, current issues/workarounds with Terraform:
