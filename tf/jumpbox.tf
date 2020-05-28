@@ -184,6 +184,6 @@ resource "azurerm_network_security_rule" "deny_all_inbound" {
 
 # https://www.terraform.io/docs/providers/azurerm/r/subnet_network_security_group_association.html
 resource "azurerm_subnet_network_security_group_association" "subnet_nsg_vm_jb" {
-  subnet_id                 = azurerm_subnet.subnet_bastion.id
+  subnet_id                 = azurerm_subnet.subnet_jb.id
   network_security_group_id = azurerm_network_security_group.nsg_vm_jb.id
 }
