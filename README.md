@@ -32,10 +32,10 @@ Complementary Azure services to leverage:
 ## Prerequisites
 
 - Install Azure CLI
-- Install Terraform (optional)
-- Install Azure DevOps CLI extension
-- Install Azure ConnectedK8s CLI extension
-- Install Azure KubernetesConfiguration CLI extension
+- Install Terraform
+  - _Optional if you would like to leverage Terraform instead of Azure CLI._
+- Install Azure ConnectedK8s and KubernetesConfiguration CLI extensions
+  - _Optional if you would like to use Azure Arc enabled Kubernetes._
 
 ## Configuration pre-provisioning
 
@@ -49,7 +49,7 @@ export NODES_COUNT=3
 export NODE_SIZE='Standard_D2s_v3'
 export ZONES=false
 
-./check-aks-cluster.sh
+./run-pre-checks.sh
 
 randomSuffix=$(shuf -i 1000-9999 -n 1)
 export AKS=FIXME$randomSuffix

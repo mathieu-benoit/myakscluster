@@ -21,3 +21,11 @@ if [[ $quotaRemaining < ($NODES_COUNT * 2) ]];
 then 
 	1>&2 echo "You don't have enough quota remaining to provision your AKS cluster based on the VM family selected!" 
 fi
+
+# Accelerated Networking
+# https://docs.microsoft.com/azure/virtual-network/create-vm-accelerated-networking-cli
+acceleratedNetworkingEnabled=$(az vm list-skus -l $LOCATION --size $NODE_SIZE --query "[0].capabilities | [?name=='AcceleratedNetworkingEnabled'].value" -o tsv)
+if [[ $acceleratedNetworkingEnabled = "False" ]]; 
+then 
+	1>&2 echo "The Node's size you have selected doesn't support Accelerated Networking!" 
+fi
