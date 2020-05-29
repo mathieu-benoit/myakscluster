@@ -27,5 +27,15 @@ fi
 acceleratedNetworkingEnabled=$(az vm list-skus -l $LOCATION --size $NODE_SIZE --query "[0].capabilities | [?name=='AcceleratedNetworkingEnabled'].value" -o tsv)
 if [[ $acceleratedNetworkingEnabled = "False" ]]; 
 then 
-	1>&2 echo "The Node's size you have selected doesn't support Accelerated Networking!" 
+	1>&2 echo "The Node's size you have selected doesn't support Accelerated Networking which could degrade network performance!" 
 fi
+
+# Premium Disk
+# https://docs.microsoft.com/azure/virtual-machines/linux/disks-types#premium-ssd
+premiumDiskEnabled=$(az vm list-skus -l $LOCATION --size $NODE_SIZE --query "[0].capabilities | [?name=='PremiumIO'].value" -o tsv)
+if [[ $premiumDiskEnabled = "False" ]]; 
+then 
+	1>&2 echo "The Node's size you have selected doesn't support Accelerated Networking which could degrade network performance!" 
+fi
+
+# IOPS (VM vs Disk)
