@@ -46,7 +46,7 @@ az login
 
 export LOCATION='canadacentral'
 export NODES_COUNT=3
-export NODE_SIZE='Standard_D2s_v3'
+export NODE_SIZE='Standard_DS2_v2'
 export ZONES=false
 
 ./run-pre-checks.sh
@@ -120,7 +120,7 @@ az aks get-credentials \
 - [AKS](https://azure.microsoft.com/pricing/details/kubernetes-service)
   - $0.10 per cluster per hour.
 - [Virtual Machines](https://azure.microsoft.com/pricing/details/virtual-machines/linux) related to AKS worker nodes
-  - Estimation: For 2 Node pools X 3 Standard_D2s_v3 Ubuntu worker nodes, ~ $xx USD/month
+  - Estimation: For 2 Node pools X 3 Standard_DS2_v2 Ubuntu worker nodes, ~ $xx USD/month
   - To decrease the cost: you may want to leverage [Azure Reserved VMs Instances](https://azure.microsoft.com/pricing/reserved-vm-instances) to reduce the cost of your AKS worker nodes
 - [Managed Disks](https://azure.microsoft.com/pricing/details/managed-disks) (related to the AKS's Nodes OS Disk)
   - Estimation: ~ $xx USD/month

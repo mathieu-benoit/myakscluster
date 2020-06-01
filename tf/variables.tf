@@ -12,11 +12,12 @@ variable "k8s_version" {
 
 variable "aks_os_disk_size" {
   type        = number
-  default     = 1024
+  default     = 256
   description = "The size of the OS disks for AKS's nodes."
-  # 100  --> P10 ~20$US/month
-  # 1024 --> P30 ~135$US/month
-  # 3200 --> P50 ~500$US/month
+  # 128GB - 500 IOPS --> P10 ~20$US/month
+  # 256GB - 1100 IOPS --> P15 ~38$US/month
+  # 512GB - 2300 IOPS --> P20 ~ 73.22$US/month
+  # 1024GB - 5000 IOPS --> P30 ~135$US/month
 }
 
 variable "location" {
@@ -69,7 +70,7 @@ variable "aks_dns_service_ip" {
 
 variable "aks_node_size" {
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_DS2_v2"
   description = "The size of the AKS's nodes/VMs."
 }
 
