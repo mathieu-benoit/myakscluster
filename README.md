@@ -2,6 +2,13 @@
 
 # myakscluster
 
+Here are blog articles related to this repository:
+- [setup a performant aks cluster](http://alwaysupalwayson.com/performant-aks/)
+- [private aks and private acr, safer you are](http://alwaysupalwayson.com/private-aks-and-acr/)
+- [my own custom and private azure pipelines agent as a docker container](http://alwaysupalwayson.com/custom-azure-pipelines-agent/)
+- [flexible kured deployment with its helm chart](http://alwaysupalwayson.com/kured/)
+- [kubernetes network policies, how to secure the communications between your pods](http://alwaysupalwayson.com/calico/)
+
 To properly setup and secure your AKS cluster, there is a couple of features and components to enable in order to properly setup your Security Posture, here is the list:
 
 Basic - without cost:
