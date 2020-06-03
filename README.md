@@ -69,8 +69,6 @@ cd cli
 FYI, current issues/workarounds with Azure CLI:
 - [az aks create|nodepool add --labels - labels ignored if prefix contains '.'](https://github.com/Azure/azure-cli/issues/13266)
   - Need to manually apply the `kubernetes.azure.com/mode=user` k8s label on each `user` node.
-- [`az aks create --enable-managed-identity --vnet-subnet-id` failing](https://github.com/Azure/azure-cli/issues/12864)
-  - See [this workaround](https://github.com/Azure/azure-cli/issues/12864#issuecomment-623806966).
 
 ## Provisioning Option 2: Terraform
 
