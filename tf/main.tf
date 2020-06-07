@@ -1,11 +1,11 @@
 # https://github.com/terraform-providers/terraform-provider-azurerm
 provider "azurerm" {
-  version = "=2.12.0"
+  version = "=2.13.0"
   features {}
 }
 
 provider "azuread" {
-  version = "=0.8.0"
+  version = "=0.10.0"
 }
 
 provider "external" {
