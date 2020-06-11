@@ -125,6 +125,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "private_dns_vnet_link_
   registration_enabled  = false
 }
 
+# https://www.terraform.io/docs/providers/azurerm/r/public_ip.html
 resource "azurerm_public_ip" "bastion_host_ip_jb" {
   name                = "bastion_host_ip_jb"
   location            = var.location

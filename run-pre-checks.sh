@@ -54,3 +54,6 @@ fi
 # P40  - 2048 - 7500
 az vm list-skus -l $LOCATION --size $NODE_SIZE --query "[0].capabilities | [?name=='UncachedDiskIOPS'].value" -o tsv
 az vm list-skus -l $LOCATION -r disks --query "[?name=='Premium_LRS']" -o table
+
+# TODOs:
+# The specified service CIDR 10.101.0.0/16 is conflicted with an existing subnet CIDR
