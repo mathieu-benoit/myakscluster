@@ -122,4 +122,5 @@ resource "azurerm_kubernetes_cluster_node_pool" "linuxusernodepool" {
     }
   availability_zones    = var.aks_availability_zones
   os_disk_size_gb       = var.aks_os_disk_size
+  mode                  = "User"
 }

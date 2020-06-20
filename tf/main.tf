@@ -1,9 +1,10 @@
 # https://github.com/terraform-providers/terraform-provider-azurerm
 provider "azurerm" {
-  version = "=2.14.0"
+  version = "=2.15.0"
   features {}
 }
 
+# https://www.terraform.io/docs/providers/azuread/index.html
 provider "azuread" {
   version = "=0.10.0"
 }
@@ -16,8 +17,9 @@ provider "random" {
   version = "=2.2.1"
 }
 
+# https://www.terraform.io/docs/providers/ado/index.html
 /*provider "azuredevops" {
-  version = "=0.1.2"
+  version = "=0.0.1"
 }*/
 
 data "azurerm_client_config" "current" {}

@@ -97,14 +97,6 @@ terraform apply \
   -var aks_node_size=$NODE_SIZE
 ```
 
-FYI, current issues/workarounds with Terraform:
-- [Support for mode:system pools in AKS](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6058)
-  - Waiting for implementation, the first nodepool is tagged as `user` instead of `system`.
-- [AKS's Uptime SLA not yet supported](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6912)
-- [Support for list of private_ip_address attributes on azurerm_private_endpoint resource](https://github.com/terraform-providers/terraform-provider-azurerm/issues/6571)
-  - I have a workaround currently.
-- [The `azuredevops` TF provider is yet in the TF registry](https://github.com/microsoft/terraform-provider-azuredevops/issues/325)
-
 ## Configuration post-provisioning
 
 You need to [connect to the Jumpbox VM via the Bastion host](https://docs.microsoft.com/azure/bastion/bastion-connect-vm-ssh) and run the commands below:
