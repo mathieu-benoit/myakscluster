@@ -107,20 +107,11 @@ resource "azurerm_virtual_network_peering" "vnet_peering_aks_jb" {
   remote_virtual_network_id = azurerm_virtual_network.vnet_jb.id
 }
 
-# https://www.terraform.io/docs/providers/external/data_source.html
-data "external" "get_aks_private_dns_zone_name" {
-  program = ["/bin/sh", "${path.module}/getAksPrivateDnsZoneName.sh"]
-
-  query = {
-    aksNodesResourceGroup = azurerm_kubernetes_cluster.aks.node_resource_group
-  }
-}
-
 # https://www.terraform.io/docs/providers/azurerm/r/private_dns_zone_virtual_network_link.html
 resource "azurerm_private_dns_zone_virtual_network_link" "private_dns_vnet_link_aks_jb" {
   name                  = local.jb_name
   resource_group_name   = azurerm_kubernetes_cluster.aks.node_resource_group
-  private_dns_zone_name = data.external.get_aks_private_dns_zone_name.result.aks_private_dns_zone
+  private_dns_zone_name = join(".", slice(split(".", azurerm_kubernetes_cluster.aks.private_fqdn), 1, length(split(".", azurerm_kubernetes_cluster.aks.private_fqdn))))
   virtual_network_id    = azurerm_virtual_network.vnet_jb.id
   registration_enabled  = false
 }
